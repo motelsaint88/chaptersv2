@@ -42,9 +42,11 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(passport.initialize());
 
-// Static file serving for uploads and built frontend
+// Static file serving for uploads and frontend.
+// Current stable site is served from public/. Future Vite builds can be enabled with AE_USE_DIST=true.
+const frontendDir = process.env.AE_USE_DIST === 'true' ? path.join(__dirname, 'dist') : path.join(__dirname, 'public');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(frontendDir));
 
 // Passport config
 require('./config/passport')(passport);
@@ -70,7 +72,7 @@ initChatSocket(io);
 // React fallback for one-service Render deploy
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(frontendDir, 'index.html'));
 });
 
 // Error handler
