@@ -1,6 +1,17 @@
-Aagontuk Express — Regeneration-inspired cinema interface build.
+# Aagontuk Express — Flat One-Service Build
 
-Flat one-service Render deployment.
+Single Render Web Service build.
+
+## Game update
+- Chat now has 4 games: Tic-Tac-Toe, Connect Four, Four Line, Rock Paper Scissors.
+- Word Guess removed from chat invites.
+- Games auto-close after completion and conversation stays alive.
+- Chat margins/padding tightened for a cleaner compartment feel.
+
+## Render
 Root Directory: empty
-Build: rm -f package-lock.json && npm install --omit=dev --no-audit --no-fund --legacy-peer-deps --registry=https://registry.npmjs.org
-Start: node server.js
+Build Command: rm -f package-lock.json && npm install --omit=dev --no-audit --no-fund --legacy-peer-deps --registry=https://registry.npmjs.org
+Start Command: node server.js
+
+
+Patch: cinema typography homepage, minimal text, chat cabin spacing, chat games limited to Tic-Tac-Toe and RPS.
