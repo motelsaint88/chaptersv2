@@ -1,11 +1,27 @@
 const { v4: uuidv4 } = require('uuid');
+const SiteConfig = require('../models/SiteConfig');
 
 // Bangladesh time check (UTC+6): service runs 19:00 - 05:00 next day
-function isBangladeshNightService() {
+async function isBangladeshNightService() {
+  try {
+    const cfg = await SiteConfig.findOne().sort({ updatedAt: -1 });
+    if (cfg && cfg.paused) return false;
+    if (cfg && cfg.forceOpen) return true;
+  } catch (err) {
+    console.warn('Signal config fallback:', err.message);
+  }
   const now = new Date();
   const bdTime = new Date(now.getTime() + 6 * 60 * 60 * 1000);
   const hour = bdTime.getUTCHours();
   return hour >= 19 || hour < 5;
+}
+
+async function getClosedMessage() {
+  try {
+    const cfg = await SiteConfig.findOne().sort({ updatedAt: -1 });
+    if (cfg && cfg.paused) return cfg.pauseText || 'Signal paused by Control Room.';
+  } catch (err) {}
+  return 'Moonline opens at 19:00 Bangladesh time.';
 }
 
 module.exports = function initChatSocket(io) {
@@ -19,14 +35,14 @@ module.exports = function initChatSocket(io) {
     console.log(`🚂 Passenger boarded: ${socket.id}`);
 
     // Check service hours
-    socket.on('check_service', () => {
-      socket.emit('service_status', { open: isBangladeshNightService() });
+    socket.on('check_service', async () => {
+      socket.emit('service_status', { open: await isBangladeshNightService() });
     });
 
     // Join waiting queue
-    socket.on('join_queue', ({ userId, userName }) => {
-      if (!isBangladeshNightService()) {
-        return socket.emit('service_closed', { message: 'Moonline opens at 19:00 Bangladesh time.' });
+    socket.on('join_queue', async ({ userId, userName }) => {
+      if (!(await isBangladeshNightService())) {
+        return socket.emit('service_closed', { message: await getClosedMessage() });
       }
 
       // Remove from queue if already in

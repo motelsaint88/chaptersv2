@@ -16,6 +16,7 @@ const adminRoutes = require('./routes/admin');
 const moderatorRoutes = require('./routes/moderator');
 const noticeRoutes = require('./routes/notices');
 const journeyRoutes = require('./routes/journeyLogs');
+const siteRoutes = require('./routes/site');
 
 // Socket handler
 const initChatSocket = require('./socket/chat');
@@ -58,6 +59,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/moderator', moderatorRoutes);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/journeys', journeyRoutes);
+app.use('/api/site', siteRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
