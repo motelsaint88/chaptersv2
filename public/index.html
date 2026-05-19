@@ -153,7 +153,7 @@
   #ae-regeneration-home .rg-hero{min-height:0!important;height:100%!important;display:grid!important;place-items:center!important;text-align:center!important;padding:0!important;position:relative!important;z-index:5!important}
   #ae-regeneration-home .rg-title{font-family:"Anton","Bebas Neue",Impact,sans-serif!important;font-size:clamp(82px,10.2vw,176px)!important;line-height:.82!important;letter-spacing:-.043em!important;text-transform:uppercase!important;margin:0 auto!important;max-width:92vw!important;width:100%!important;text-align:center!important;white-space:normal!important;overflow:visible!important;background:linear-gradient(96deg,#a3878d 0%,#bf977d 27%,#e5c36d 52%,#f0e466 70%,#b38a78 100%)!important;background-size:260% 100%!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;animation:aeCinemaGradient 7s ease-in-out infinite!important;text-shadow:none!important}
   #ae-regeneration-home .rg-title .ae-word-a,#ae-regeneration-home .rg-title .ae-word-b{display:inline-block!important;width:auto!important;white-space:nowrap!important;font:inherit!important;letter-spacing:inherit!important;background:inherit!important;-webkit-background-clip:inherit!important;background-clip:inherit!important;color:transparent!important}
-  #ae-regeneration-home .rg-title .ae-word-a::after{content:" a0"!important}
+  #ae-regeneration-home .rg-title .ae-word-a::after{content:""!important}
   #ae-regeneration-home .rg-state{font-family:"Anton","Bebas Neue",Impact,sans-serif!important;font-size:clamp(46px,5.4vw,92px)!important;line-height:.86!important;letter-spacing:-.025em!important;text-transform:uppercase!important;margin:18px 0 0!important;background:linear-gradient(96deg,#f2df6f,#c58c52,#efe86a,#a48778)!important;background-size:260% 100%!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;animation:aeCinemaGradient 7s ease-in-out infinite reverse!important}
   #ae-regeneration-home .rg-actions{margin-top:34px!important;display:flex!important;justify-content:center!important;gap:34px!important;flex-wrap:wrap!important}
   #ae-regeneration-home .rg-action{font-family:"Anton","Bebas Neue",Impact,sans-serif!important;font-size:23px!important;letter-spacing:.055em!important;line-height:1!important;color:#f2ead8!important;text-decoration:none!important;background:transparent!important;border:0!important;border-radius:0!important;padding:10px 0!important;position:relative!important;white-space:nowrap!important}
@@ -254,6 +254,77 @@
 </style>
 <script id="ae-device-mode-class-v2">
 (()=>{try{function setMode(){document.documentElement.classList.toggle('ae-phone', innerWidth<=980);document.documentElement.classList.toggle('ae-desktop', innerWidth>980)}setMode();addEventListener('resize',setMode,{passive:true});}catch(e){}})();
+</script>
+
+
+
+<!-- AE final readable cinema repair: kills broken separator, softer color, separate desktop/phone layouts -->
+<style id="ae-readable-cinema-final-v3">
+  :root{--ae-soft-cream:#f3ead8;--ae-soft-gold:#d6b35f;--ae-soft-tan:#b89478;--ae-soft-rose:#9a7f82;}
+  body.ae-cinema-home{overflow:hidden!important;background:#0a0a0a!important;}
+  #ae-regeneration-home{overflow:hidden!important;background:#0a0a0a!important;}
+  #ae-regeneration-home .rg-page{background:radial-gradient(circle at 52% 42%,rgba(217,179,95,.10),transparent 34%),linear-gradient(180deg,#202020 0%,#111 46%,#070707 100%)!important;}
+  #ae-regeneration-home .rg-page:before{opacity:.22!important;background-size:90px 90px!important;}
+  #ae-regeneration-home .rg-mark::after{content:"MOONLINE"!important;}
+  #ae-regeneration-home .rg-title .ae-word-a::after{content:""!important;}
+  #ae-regeneration-home .rg-title{font-family:"Anton","Bebas Neue",Impact,sans-serif!important;text-transform:uppercase!important;text-align:center!important;letter-spacing:-.018em!important;line-height:.78!important;width:100%!important;max-width:100%!important;overflow:visible!important;white-space:normal!important;background:linear-gradient(95deg,#8e777a 0%,#b28c75 28%,#d8b65f 55%,#e6d96d 75%,#ad8972 100%)!important;background-size:230% 100%!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;animation:aeCinemaGradient 9s ease-in-out infinite!important;text-shadow:none!important;}
+  #ae-regeneration-home .rg-title .ae-word-a,#ae-regeneration-home .rg-title .ae-word-b{display:block!important;width:100%!important;white-space:nowrap!important;text-align:center!important;color:transparent!important;background:inherit!important;-webkit-background-clip:inherit!important;background-clip:inherit!important;font:inherit!important;letter-spacing:inherit!important;line-height:inherit!important;}
+  #ae-regeneration-home .rg-state{font-family:"Anton","Bebas Neue",Impact,sans-serif!important;text-transform:uppercase!important;letter-spacing:-.012em!important;background:linear-gradient(95deg,#e8d46c 0%,#c69a56 45%,#efe67a 80%)!important;background-size:220% 100%!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;animation:aeCinemaGradient 9s ease-in-out infinite reverse!important;text-shadow:none!important;}
+  #ae-regeneration-home .rg-menu a,#ae-regeneration-home .rg-pass,#ae-regeneration-home .rg-action{font-family:"Anton","Bebas Neue",Impact,sans-serif!important;color:#eee5d0!important;text-shadow:none!important;}
+  #ae-regeneration-home .rg-action.primary{color:#e4cf62!important;}
+
+  /* PC: proper cinematic spacing, no overlap */
+  @media (min-width:981px){
+    #ae-regeneration-home .rg-wrap{height:100svh!important;min-height:100svh!important;padding:44px 64px 34px!important;display:grid!important;grid-template-rows:auto 1fr!important;overflow:hidden!important;}
+    #ae-regeneration-home .rg-nav{display:grid!important;grid-template-columns:minmax(260px,1fr) auto minmax(260px,1fr)!important;align-items:center!important;gap:42px!important;min-height:64px!important;border:0!important;padding:0!important;}
+    #ae-regeneration-home .rg-mark{display:flex!important;align-items:flex-end!important;gap:16px!important;white-space:nowrap!important;text-align:left!important;font-size:0!important;text-decoration:none!important;}
+    #ae-regeneration-home .rg-mark b{display:inline-block!important;white-space:nowrap!important;font-family:"Anton","Bebas Neue",Impact,sans-serif!important;font-size:30px!important;line-height:.9!important;letter-spacing:.005em!important;color:#f3ead8!important;word-spacing:.18em!important;}
+    #ae-regeneration-home .rg-mark::after{display:inline-block!important;margin:0 0 2px!important;font-family:"IBM Plex Mono",monospace!important;font-size:11px!important;letter-spacing:.32em!important;color:#bfb5a4!important;}
+    #ae-regeneration-home .rg-menu{display:flex!important;justify-content:center!important;align-items:center!important;gap:44px!important;white-space:nowrap!important;}
+    #ae-regeneration-home .rg-menu a{font-size:24px!important;letter-spacing:.055em!important;line-height:1!important;}
+    #ae-regeneration-home .rg-right{display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:28px!important;}
+    #ae-regeneration-home .rg-status{font-size:12px!important;letter-spacing:.22em!important;white-space:nowrap!important;}
+    #ae-regeneration-home .rg-pass{font-size:24px!important;letter-spacing:.055em!important;}
+    #ae-regeneration-home .rg-hero{height:100%!important;min-height:0!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:12px 0 54px!important;}
+    #ae-regeneration-home .rg-title{font-size:clamp(82px,10.4vw,168px)!important;line-height:.78!important;max-width:900px!important;margin:0 auto!important;}
+    #ae-regeneration-home .rg-state{font-size:clamp(50px,5.2vw,84px)!important;line-height:.85!important;margin:20px 0 0!important;}
+    #ae-regeneration-home .rg-actions{display:flex!important;justify-content:center!important;gap:42px!important;margin-top:38px!important;}
+    #ae-regeneration-home .rg-action{font-size:24px!important;letter-spacing:.055em!important;white-space:nowrap!important;padding:8px 0!important;}
+  }
+
+  /* Phone/tablet: a real separate layout, no fake desktop shrink */
+  @media (max-width:980px){
+    body.ae-cinema-home{overflow:hidden!important;}
+    #ae-regeneration-home .rg-wrap{height:100dvh!important;min-height:100dvh!important;padding:18px 16px 24px!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;}
+    #ae-regeneration-home .rg-nav{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:15px!important;width:100%!important;border:0!important;padding:0!important;}
+    #ae-regeneration-home .rg-mark{display:block!important;width:100%!important;white-space:normal!important;text-align:left!important;text-decoration:none!important;font-size:0!important;}
+    #ae-regeneration-home .rg-mark b{display:block!important;max-width:170px!important;font-family:"Anton","Bebas Neue",Impact,sans-serif!important;font-size:26px!important;line-height:.86!important;letter-spacing:.005em!important;color:#f3ead8!important;word-spacing:.2em!important;white-space:normal!important;}
+    #ae-regeneration-home .rg-mark::after{display:block!important;margin-top:7px!important;font-family:"IBM Plex Mono",monospace!important;font-size:10px!important;letter-spacing:.34em!important;color:#bfb5a4!important;}
+    #ae-regeneration-home .rg-menu{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;width:100%!important;overflow:visible!important;}
+    #ae-regeneration-home .rg-menu a{font-size:clamp(13px,3.9vw,17px)!important;letter-spacing:.035em!important;line-height:1!important;text-align:center!important;padding:9px 1px!important;white-space:nowrap!important;min-width:0!important;}
+    #ae-regeneration-home .rg-right{display:none!important;}
+    #ae-regeneration-home .rg-hero{flex:1!important;min-height:0!important;height:auto!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:8px 0 52px!important;overflow:visible!important;}
+    #ae-regeneration-home .rg-title{font-size:clamp(54px,17vw,84px)!important;line-height:.80!important;letter-spacing:-.012em!important;max-width:100%!important;margin:0 auto!important;}
+    #ae-regeneration-home .rg-state{font-size:clamp(36px,11.5vw,56px)!important;line-height:.86!important;margin-top:14px!important;white-space:nowrap!important;}
+    #ae-regeneration-home .rg-actions{display:grid!important;grid-template-columns:repeat(3,auto)!important;justify-content:center!important;align-items:center!important;gap:clamp(14px,4vw,24px)!important;margin-top:26px!important;width:100%!important;}
+    #ae-regeneration-home .rg-action{font-size:clamp(14px,4.2vw,18px)!important;letter-spacing:.035em!important;white-space:nowrap!important;padding:8px 0!important;}
+  }
+  @media(max-width:380px){
+    #ae-regeneration-home .rg-wrap{padding-left:12px!important;padding-right:12px!important;}
+    #ae-regeneration-home .rg-menu a{font-size:12px!important;letter-spacing:.025em!important;}
+    #ae-regeneration-home .rg-title{font-size:clamp(48px,16vw,64px)!important;}
+    #ae-regeneration-home .rg-state{font-size:32px!important;}
+    #ae-regeneration-home .rg-action{font-size:13px!important;}
+    #ae-regeneration-home .rg-actions{gap:11px!important;}
+  }
+</style>
+<script id="ae-readable-cinema-title-guard-v3">
+(()=>{try{function clean(){
+ const h=document.querySelector('#ae-regeneration-home .rg-title');
+ if(h){h.innerHTML='<span class="ae-word-a">AAGONTUK</span><span class="ae-word-b">EXPRESS</span>';h.setAttribute('aria-label','Aagontuk Express');}
+ const mark=document.querySelector('#ae-regeneration-home .rg-mark b'); if(mark) mark.textContent='AAGONTUK EXPRESS';
+ const markLink=document.querySelector('#ae-regeneration-home .rg-mark'); if(markLink){ [...markLink.childNodes].forEach(n=>{if(n.nodeType===3) n.textContent='';}); }
+} setInterval(clean,350); setTimeout(clean,50); setTimeout(clean,650); addEventListener('resize',clean,{passive:true});}catch(e){}})();
 </script>
 
 </body>
