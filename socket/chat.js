@@ -26,7 +26,7 @@ module.exports = function initChatSocket(io) {
     // Join waiting queue
     socket.on('join_queue', ({ userId, userName }) => {
       if (!isBangladeshNightService()) {
-        return socket.emit('service_closed', { message: 'The night train is not yet in service. Boarding begins at 19:00 Bangladesh time.' });
+        return socket.emit('service_closed', { message: 'Moonline opens at 19:00 Bangladesh time.' });
       }
 
       // Remove from queue if already in
@@ -52,11 +52,11 @@ module.exports = function initChatSocket(io) {
         sessionMap.set(partner.socketId, sessionId);
 
         sessionMessages.set(sessionId, []);
-        socket.emit('matched', { sessionId, partnerSocketId: partner.socketId, message: 'A fellow passenger has entered your compartment. The journey begins.' });
-        io.to(partner.socketId).emit('matched', { sessionId, partnerSocketId: socket.id, message: 'A fellow passenger has entered your compartment. The journey begins.' });
+        socket.emit('matched', { sessionId, partnerSocketId: partner.socketId, message: 'A passenger entered the compartment.' });
+        io.to(partner.socketId).emit('matched', { sessionId, partnerSocketId: socket.id, message: 'A passenger entered the compartment.' });
       } else {
         waitingQueue.push({ socketId: socket.id, userId, userName: userName || 'Anonymous Passenger' });
-        socket.emit('waiting', { message: 'Waiting on the platform for a fellow passenger...' });
+        socket.emit('waiting', { message: 'Waiting on platform...' });
       }
     });
 
@@ -99,9 +99,9 @@ module.exports = function initChatSocket(io) {
       if (!partnerId) return;
       io.to(partnerId).emit('song_dedicated', {
         song,
-        message: 'Your fellow passenger dedicated a song for this journey.'
+        message: 'Song dedicated.'
       });
-      socket.emit('dedication_sent', { message: 'Song dedicated to your fellow passenger.' });
+      socket.emit('dedication_sent', { message: 'Song dedicated.' });
     });
 
     // Game invite
@@ -153,6 +153,18 @@ module.exports = function initChatSocket(io) {
         gameStates.set(sessionId, state);
         io.to(partnerId).emit('game_started', { game, sessionId, symbol: 'X', state });
         socket.emit('game_started', { game, sessionId, symbol: 'O', state });
+      } else if (game === 'diceduel') {
+        const state = {
+          game,
+          rolls: { A: null, B: null },
+          players: { A: partnerId, B: socket.id },
+          winner: null,
+          result: null,
+          gameOver: false
+        };
+        gameStates.set(sessionId, state);
+        io.to(partnerId).emit('game_started', { game, sessionId, symbol: 'A', state });
+        socket.emit('game_started', { game, sessionId, symbol: 'B', state });
       } else if (game === 'rps') {
         const state = {
           game,
@@ -171,7 +183,7 @@ module.exports = function initChatSocket(io) {
     // Game decline
     socket.on('game_decline', () => {
       const partnerId = activePairs.get(socket.id);
-      if (partnerId) io.to(partnerId).emit('game_declined', { message: 'Your fellow passenger declined the game.' });
+      if (partnerId) io.to(partnerId).emit('game_declined', { message: 'Game declined.' });
     });
 
     // Close game overlay without ending chat
@@ -238,6 +250,25 @@ module.exports = function initChatSocket(io) {
       state.turn = symbol === 'X' ? 'O' : 'X';
       gameStates.set(sessionId, state);
       emitGameUpdate(socket, sessionId, 'fourline_update', state);
+      if (state.gameOver) autoCloseGame(sessionId, socket.id);
+    });
+
+    // Dice Duel roll
+    socket.on('dice_roll', ({ sessionId }) => {
+      const state = gameStates.get(sessionId);
+      if (!state || state.game !== 'diceduel' || state.gameOver) return;
+      const symbol = state.players.A === socket.id ? 'A' : 'B';
+      if (state.rolls[symbol]) return;
+      state.rolls[symbol] = Math.floor(Math.random() * 6) + 1;
+      const a = state.rolls.A, b = state.rolls.B;
+      if (a && b) {
+        state.gameOver = true;
+        if (a === b) state.winner = 'draw';
+        else state.winner = a > b ? 'A' : 'B';
+        state.result = `${a} vs ${b}`;
+      }
+      gameStates.set(sessionId, state);
+      emitGameUpdate(socket, sessionId, 'diceduel_update', state);
       if (state.gameOver) autoCloseGame(sessionId, socket.id);
     });
 
