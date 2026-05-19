@@ -22,7 +22,7 @@
   function applyHome(cfg){
     const home=document.getElementById('ae-regeneration-home'); if(!home) return;
     const title=home.querySelector('.rg-title');
-    if(title){ title.innerHTML='<span>AAGONTUK&nbsp;EXPRESS</span>'; title.setAttribute('aria-label','Aagontuk Express'); }
+    if(title){ title.innerHTML='<span class="ae-word-a">AAGONTUK</span><span class="ae-word-b">EXPRESS</span>'; title.setAttribute('aria-label','Aagontuk Express'); }
     const mark=home.querySelector('.rg-mark');
     if(mark){ mark.innerHTML='<b>Aagontuk Express</b>'; }
     const state=home.querySelector('.rg-state');

@@ -73,9 +73,59 @@
     </style>
     <script id="aagontuk-cinema-v4-script">
       (()=>{try{function routeClass(){document.body.classList.toggle('ae-chat-route',location.pathname.startsWith('/chat'));}['pushState','replaceState'].forEach(k=>{const o=history[k];history[k]=function(){const r=o.apply(this,arguments);setTimeout(routeClass,50);return r}});addEventListener('popstate',()=>setTimeout(routeClass,50));setInterval(routeClass,500);routeClass();
-      const patch=()=>{const h=document.querySelector('#ae-regeneration-home .rg-title'); if(h && !h.dataset.v4){h.dataset.v4='1'; h.innerHTML='<span>AAGONTUK EXPRESS</span>';} const sc=document.querySelector('#ae-regeneration-home .rg-scroll'); if(sc) sc.remove(); const foot=document.querySelector('#ae-regeneration-home .rg-foot'); if(foot) foot.remove();}; setInterval(()=>{try{patch()}catch(e){}},300);}catch(e){console.warn('cinema v4 skipped',e)}})();
+      const patch=()=>{const h=document.querySelector('#ae-regeneration-home .rg-title'); if(h && !h.dataset.v4){h.dataset.v4='1'; h.innerHTML='<span class="ae-word-a">AAGONTUK</span><span class="ae-word-b">EXPRESS</span>';} const sc=document.querySelector('#ae-regeneration-home .rg-scroll'); if(sc) sc.remove(); const foot=document.querySelector('#ae-regeneration-home .rg-foot'); if(foot) foot.remove();}; setInterval(()=>{try{patch()}catch(e){}},300);}catch(e){console.warn('cinema v4 skipped',e)}})();
     </script>
 
+
+    <style id="aagontuk-mobile-title-final-fix">
+      /* Final mobile-safe cinema homepage */
+      #ae-regeneration-home, #ae-regeneration-home .rg-page, #ae-regeneration-home .rg-wrap{max-width:100vw!important;overflow-x:hidden!important}
+      #ae-regeneration-home .rg-title{white-space:normal!important;overflow:visible!important;text-align:center!important;width:100%!important;max-width:100%!important}
+      #ae-regeneration-home .rg-title .ae-word-a,
+      #ae-regeneration-home .rg-title .ae-word-b{display:inline!important}
+      #ae-regeneration-home .rg-title .ae-word-a::after{content:" "}
+      @media(max-width:700px){
+        body.ae-cinema-home{overflow:hidden!important}
+        #ae-regeneration-home .rg-wrap{padding:26px 20px 24px!important;min-height:100svh!important;display:grid!important;grid-template-rows:auto 1fr!important}
+        #ae-regeneration-home .rg-nav{display:grid!important;grid-template-columns:1fr!important;gap:18px!important;align-items:start!important}
+        #ae-regeneration-home .rg-mark{font-size:24px!important;line-height:.82!important;max-width:100%!important;white-space:normal!important}
+        #ae-regeneration-home .rg-mark b{display:block!important}
+        #ae-regeneration-home .rg-menu{display:flex!important;justify-content:space-between!important;gap:18px!important;width:100%!important;max-width:100%!important;overflow:visible!important}
+        #ae-regeneration-home .rg-menu a{font-size:20px!important;white-space:nowrap!important;letter-spacing:.045em!important}
+        #ae-regeneration-home .rg-right{display:none!important}
+        #ae-regeneration-home .rg-hero{min-height:0!important;height:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 0 42px!important;overflow:visible!important}
+        #ae-regeneration-home .rg-title{font-size:clamp(60px,21vw,94px)!important;line-height:.78!important;letter-spacing:-.04em!important;max-width:100%!important;transform:none!important}
+        #ae-regeneration-home .rg-title .ae-word-a,
+        #ae-regeneration-home .rg-title .ae-word-b{display:block!important;width:100%!important}
+        #ae-regeneration-home .rg-title .ae-word-a::after{content:""!important}
+        #ae-regeneration-home .rg-state{font-size:clamp(48px,16vw,76px)!important;line-height:.82!important;margin-top:14px!important}
+        #ae-regeneration-home .rg-actions{margin-top:34px!important;display:flex!important;justify-content:center!important;gap:22px!important;flex-wrap:wrap!important}
+        #ae-regeneration-home .rg-action{font-size:18px!important;padding:8px 4px!important;white-space:nowrap!important}
+      }
+      @media(max-width:390px){
+        #ae-regeneration-home .rg-wrap{padding-left:16px!important;padding-right:16px!important}
+        #ae-regeneration-home .rg-menu a{font-size:17px!important}
+        #ae-regeneration-home .rg-title{font-size:clamp(54px,20vw,78px)!important}
+        #ae-regeneration-home .rg-state{font-size:clamp(42px,15vw,64px)!important}
+        #ae-regeneration-home .rg-actions{gap:16px!important}
+        #ae-regeneration-home .rg-action{font-size:15px!important}
+      }
+    </style>
+    <script id="aagontuk-mobile-title-final-script">
+      (()=>{
+        const fix=()=>{
+          const h=document.querySelector('#ae-regeneration-home .rg-title');
+          if(h){
+            h.innerHTML='<span class="ae-word-a">AAGONTUK</span><span class="ae-word-b">EXPRESS</span>';
+            h.setAttribute('aria-label','Aagontuk Express');
+          }
+          const mark=document.querySelector('#ae-regeneration-home .rg-mark b');
+          if(mark) mark.textContent='AAGONTUK EXPRESS';
+        };
+        setInterval(()=>{try{fix()}catch(e){}},250);
+        setTimeout(fix,50);setTimeout(fix,500);setTimeout(fix,1200);
+      })();
+    </script>
       <link rel="stylesheet" href="/aagontuk-upgrades.css" />
     <script defer src="/aagontuk-upgrades.js"></script>
   </head>
