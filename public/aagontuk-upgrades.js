@@ -10,9 +10,11 @@
   let lastConfig=null;
 
   function injectPolishStyles(){
-    if(document.getElementById('ae-final-polish-v6')) return;
+    const stale=document.getElementById('ae-final-polish-v6');
+    if(stale) stale.remove();
+    if(document.getElementById('ae-final-polish-v7')) return;
     const style=document.createElement('style');
-    style.id='ae-final-polish-v6';
+    style.id='ae-final-polish-v7';
     style.textContent=`
       body.ae-cinema-home #ae-regeneration-home{background:#090909!important;overflow:hidden!important}
       body.ae-cinema-home #ae-regeneration-home .rg-page{background:radial-gradient(circle at 50% 44%,rgba(210,173,91,.12),transparent 30%),linear-gradient(180deg,#1a1a1a 0%,#101010 48%,#060606 100%)!important}
@@ -90,7 +92,7 @@
       #ae-waiting-lounge .ae-lounge-meta{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:26px;font:600 10px/1 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:#8f897e}
       #ae-waiting-lounge .ae-lounge-meta span{border:1px solid rgba(238,229,203,.11);padding:9px 11px;background:rgba(255,255,255,.025)}
       @keyframes aePulse{0%,100%{transform:scale(.82);opacity:.45}50%{transform:scale(1.1);opacity:1}}
-      body.ae-chat-searching .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2 > .flex-1{visibility:hidden!important}
+      body.ae-chat-searching .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2 > .flex-1{visibility:visible!important}
       @media(max-width:640px){
         #ae-waiting-lounge{inset:64px 0 0;padding:16px}
         #ae-waiting-lounge .ae-lounge-card{padding:24px 18px}
@@ -185,8 +187,8 @@
       return;
     }
     const hasComposer=!!document.querySelector('input[placeholder="Type a message..."]');
-    const text=document.body.innerText||'';
-    const isWaiting=!hasComposer&&(text.includes('WAITING ON THE PLATFORM')||text.includes('Waiting for a fellow passenger'));
+    const waitingLabel=[...document.querySelectorAll('div')].find(el=>el.children.length===0&&el.textContent.trim()==='WAITING ON THE PLATFORM');
+    const isWaiting=!hasComposer&&!!waitingLabel;
     document.body.classList.toggle('ae-chat-searching',isWaiting);
     if(!isWaiting){ if(old) old.remove(); return; }
     if(old) return;
