@@ -124,6 +124,47 @@
         body:not(.ae-cinema-home) .chat-bubble-me,
         body:not(.ae-cinema-home) .chat-bubble-stranger{max-width:86vw!important}
       }
+      .ae-quick-react{display:flex;gap:7px;margin-top:12px;opacity:.56;transition:.18s ease;align-items:center;flex-wrap:wrap}
+      .chat-bubble-me:hover .ae-quick-react,.chat-bubble-stranger:hover .ae-quick-react{opacity:1}
+      .ae-quick-react button{width:34px;height:30px;border-radius:999px;border:1px solid rgba(238,229,203,.08);background:rgba(255,255,255,.035);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.18s ease;font-size:15px}
+      .ae-quick-react button:hover{background:rgba(217,193,95,.15);border-color:rgba(217,193,95,.28);transform:translateY(-1px)}
+      .ae-reaction-bar{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;min-height:20px}
+      .ae-reaction-pill{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:23px;padding:0 8px;border-radius:999px;border:1px solid rgba(217,193,95,.22);background:rgba(217,193,95,.12);box-shadow:0 8px 22px rgba(0,0,0,.18);font-size:14px}
+      .ae-protocol-hidden{display:none!important}
+      .ae-chat-song-card{min-width:min(360px,70vw);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:13px;border:1px solid rgba(217,193,95,.20);background:radial-gradient(circle at 0 0,rgba(217,193,95,.16),transparent 34%),rgba(9,9,11,.46);border-radius:18px;padding:13px 14px;margin:-2px 0;color:#eee5cb;cursor:pointer}
+      .ae-chat-song-art{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,rgba(217,193,95,.28),rgba(255,255,255,.05));display:flex;align-items:center;justify-content:center;color:#ead95f;font-size:19px}
+      .ae-chat-song-k{font:600 10px/1 "IBM Plex Mono",monospace;letter-spacing:.18em;text-transform:uppercase;color:#d9c15f;margin-bottom:5px}
+      .ae-chat-song-title{font:700 15px/1.25 "DM Sans",system-ui,sans-serif;color:#fff6df}
+      .ae-chat-song-artist{font:500 12px/1.35 "IBM Plex Mono",monospace;color:#9b96bb;margin-top:3px}
+      .ae-chat-song-go{font-size:18px;color:#d9c15f}
+      .ae-song-trigger{height:52px;width:52px;border-radius:18px;border:1px solid rgba(238,229,203,.14);background:rgba(255,255,255,.04);color:#d9c15f;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;font-size:20px}
+      .ae-song-trigger:hover{background:rgba(217,193,95,.13)}
+      .ae-song-modal{position:fixed;inset:0;z-index:2147483640;background:rgba(3,3,6,.72);backdrop-filter:blur(12px);display:flex;align-items:flex-end;justify-content:center;padding:18px}
+      .ae-song-sheet{width:min(620px,100%);max-height:min(720px,88dvh);overflow:hidden;border:1px solid rgba(238,229,203,.13);border-radius:28px;background:linear-gradient(180deg,rgba(20,20,28,.97),rgba(8,8,12,.98));box-shadow:0 30px 90px rgba(0,0,0,.56);display:flex;flex-direction:column}
+      .ae-song-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 20px;border-bottom:1px solid rgba(238,229,203,.08)}
+      .ae-song-head b{font:700 16px/1 "DM Sans",system-ui,sans-serif;color:#fff6df}
+      .ae-song-head small{display:block;margin-top:5px;font:500 10px/1 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:#9b96bb}
+      .ae-song-close{width:34px;height:34px;border-radius:999px;border:1px solid rgba(238,229,203,.12);background:rgba(255,255,255,.04);color:#eee5cb;cursor:pointer}
+      .ae-song-search{display:flex;gap:10px;padding:16px 20px;border-bottom:1px solid rgba(238,229,203,.08)}
+      .ae-song-search input{flex:1;min-width:0;height:46px;border-radius:16px;border:1px solid rgba(238,229,203,.13);background:#0c0c13;color:#eee5cb;padding:0 14px;font:500 14px/1 "DM Sans",system-ui,sans-serif}
+      .ae-song-search button{height:46px;border-radius:16px;border:0;background:#d9b14e;color:#090909;padding:0 18px;font:800 12px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+      .ae-song-results{padding:10px;overflow:auto}
+      .ae-song-result{width:100%;display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:12px;border:1px solid transparent;background:transparent;color:#eee5cb;text-align:left;padding:10px;border-radius:16px;cursor:pointer}
+      .ae-song-result:hover{background:rgba(255,255,255,.045);border-color:rgba(217,193,95,.16)}
+      .ae-song-result img{width:48px;height:48px;border-radius:13px;object-fit:cover;background:#151515}
+      .ae-song-result-title{font:700 14px/1.25 "DM Sans",system-ui,sans-serif;color:#fff6df}
+      .ae-song-result-artist{font:500 12px/1.35 "IBM Plex Mono",monospace;color:#9b96bb;margin-top:3px}
+      .ae-song-result-send{font:800 11px/1 "IBM Plex Mono",monospace;letter-spacing:.08em;color:#d9c15f;text-transform:uppercase}
+      .ae-song-note{padding:18px 20px;font:500 13px/1.45 "DM Sans",system-ui,sans-serif;color:#9b96bb;text-align:center}
+      @media(max-width:640px){
+        .ae-quick-react{gap:5px;margin-top:10px}
+        .ae-quick-react button{width:30px;height:28px;font-size:14px}
+        .ae-chat-song-card{min-width:min(310px,76vw);grid-template-columns:auto 1fr;padding:12px}
+        .ae-chat-song-go{display:none}
+        .ae-song-trigger{height:48px;width:48px;border-radius:16px}
+        .ae-song-modal{padding:10px;align-items:flex-end}
+        .ae-song-sheet{border-radius:24px;max-height:86dvh}
+      }
       #ae-waiting-lounge{display:none!important}
       body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2{min-height:100dvh!important;padding-top:74px!important;background:radial-gradient(circle at 50% 0%,rgba(217,155,66,.08),transparent 34%),#080810!important}
       body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2 > .glass{position:relative!important;z-index:2!important;display:flex!important;visibility:visible!important;opacity:1!important}
@@ -257,14 +298,176 @@
     catch(e){note.textContent=e.message||'Ad failed.'}
   }
 
+  function chatInput(){
+    const input=document.querySelector('input[placeholder="Type a message..."]');
+    const sendBtn=input&&input.parentElement&&input.parentElement.querySelector('button:last-child');
+    return { input, sendBtn };
+  }
+
+  function sendChatProtocol(text){
+    const { input, sendBtn }=chatInput();
+    if(!input||!sendBtn) return false;
+    input.value=text;
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    setTimeout(()=>sendBtn.click(),25);
+    return true;
+  }
+
+  function chatBubbleLine(b){
+    return (b.innerText||b.textContent||'').split('\n').map(x=>x.trim()).filter(Boolean)[0]||'';
+  }
+
+  function parseReactionProtocol(text){
+    const m=String(text||'').match(/\[\[AE_REACTION\|([^|]+)\|(\d+)\|(.+?)\]\]/);
+    if(!m) return null;
+    try{return { side:m[1], index:+m[2], emoji:decodeURIComponent(m[3]) };}catch{return null;}
+  }
+
+  function parseSongProtocol(text){
+    const m=String(text||'').match(/\[\[AE_SONG\|([^|]*)\|([^|]*)\|([^|]*)\]\]/);
+    if(!m) return null;
+    try{
+      return {
+        title:decodeURIComponent(m[1]||''),
+        artist:decodeURIComponent(m[2]||''),
+        url:decodeURIComponent(m[3]||'')
+      };
+    }catch{return null;}
+  }
+
+  function sideForBubble(b){
+    return b.classList.contains('chat-bubble-me')?'me':'stranger';
+  }
+
+  function indexForBubble(b){
+    const side=sideForBubble(b);
+    return [...document.querySelectorAll('.chat-bubble-'+side)].filter(x=>!x.classList.contains('ae-protocol-hidden')).indexOf(b);
+  }
+
+  function targetSideForProtocol(protocolSide, protocolBubble){
+    if(sideForBubble(protocolBubble)==='me') return protocolSide;
+    return protocolSide==='me'?'stranger':'me';
+  }
+
+  function addReactionToBubble(target, emoji){
+    if(!target) return;
+    let bar=target.querySelector(':scope > .ae-reaction-bar');
+    if(!bar){ bar=document.createElement('div'); bar.className='ae-reaction-bar'; target.appendChild(bar); }
+    const pill=document.createElement('span');
+    pill.className='ae-reaction-pill';
+    pill.textContent=emoji;
+    bar.appendChild(pill);
+  }
+
+  function renderProtocolBubbles(){
+    document.querySelectorAll('.chat-bubble-me,.chat-bubble-stranger').forEach(b=>{
+      const line=chatBubbleLine(b);
+      const reaction=parseReactionProtocol(line);
+      if(reaction){
+        if(!b.dataset.aeProtocolDone){
+          b.dataset.aeProtocolDone='1';
+          b.classList.add('ae-protocol-hidden');
+          if(sideForBubble(b)!=='me'){
+            const targetSide=targetSideForProtocol(reaction.side,b);
+            const target=[...document.querySelectorAll('.chat-bubble-'+targetSide)].filter(x=>!x.classList.contains('ae-protocol-hidden'))[reaction.index];
+            addReactionToBubble(target,reaction.emoji);
+          }
+        }
+        return;
+      }
+      const song=parseSongProtocol(line);
+      if(song&&!b.dataset.aeSongCard){
+        b.dataset.aeSongCard='1';
+        const url=song.url||`https://open.spotify.com/search/${encodeURIComponent([song.title,song.artist].filter(Boolean).join(' '))}`;
+        b.innerHTML=`<div class="ae-chat-song-card" role="button" tabindex="0"><div class="ae-chat-song-art">♪</div><div><div class="ae-chat-song-k">Song Dedication</div><div class="ae-chat-song-title">${escapeHtml(song.title||'Untitled song')}</div><div class="ae-chat-song-artist">${escapeHtml(song.artist||'Open music')}</div></div><div class="ae-chat-song-go">↗</div></div>`;
+        b.querySelector('.ae-chat-song-card').addEventListener('click',()=>window.open(url,'_blank','noopener'));
+      }
+    });
+  }
+
+  function enhanceChatReactions(){
+    const { input, sendBtn }=chatInput();
+    document.querySelectorAll('.chat-bubble-me,.chat-bubble-stranger').forEach(b=>{
+      if(b.classList.contains('ae-protocol-hidden')||b.dataset.aeSongCard) return;
+      if(!b.dataset.aeReact){
+        b.dataset.aeReact='1';
+        const row=document.createElement('div');
+        row.className='ae-quick-react';
+        row.innerHTML=EMOJIS.map(e=>`<button type="button" title="React">${e}</button>`).join('');
+        row.addEventListener('click',ev=>{
+          const btn=ev.target.closest('button');
+          if(!btn||!input||!sendBtn) return;
+          ev.preventDefault();
+          ev.stopPropagation();
+          const emoji=btn.textContent;
+          const side=sideForBubble(b);
+          const index=indexForBubble(b);
+          addReactionToBubble(b,emoji);
+          sendChatProtocol(`[[AE_REACTION|${side}|${index}|${encodeURIComponent(emoji)}]]`);
+        });
+        b.appendChild(row);
+      }
+    });
+  }
+
+  function openSongModal(){
+    if(document.getElementById('ae-song-modal')) return;
+    const modal=document.createElement('div');
+    modal.id='ae-song-modal';
+    modal.className='ae-song-modal';
+    modal.innerHTML=`<div class="ae-song-sheet"><div class="ae-song-head"><div><b>Send a song</b><small>Search live music</small></div><button class="ae-song-close" type="button">×</button></div><form class="ae-song-search"><input type="search" placeholder="Search any song or artist" autocomplete="off"><button>Search</button></form><div class="ae-song-results"><div class="ae-song-note">Search a song, then send it as a dedication card.</div></div></div>`;
+    document.body.appendChild(modal);
+    const close=()=>modal.remove();
+    modal.addEventListener('click',ev=>{ if(ev.target===modal) close(); });
+    modal.querySelector('.ae-song-close').onclick=close;
+    const form=modal.querySelector('form');
+    const input=form.querySelector('input');
+    const results=modal.querySelector('.ae-song-results');
+    form.onsubmit=async ev=>{
+      ev.preventDefault();
+      const q=input.value.trim();
+      if(q.length<2){ results.innerHTML='<div class="ae-song-note">Type at least 2 letters.</div>'; return; }
+      results.innerHTML='<div class="ae-song-note">Searching live songs...</div>';
+      try{
+        const r=await fetch('/api/songs/search?q='+encodeURIComponent(q),{cache:'no-store'});
+        const d=await r.json();
+        if(!r.ok) throw new Error(d.message||'Search failed');
+        const songs=d.songs||[];
+        if(!songs.length){ results.innerHTML='<div class="ae-song-note">No songs found. Try another title.</div>'; return; }
+        results.innerHTML=songs.map((s,i)=>`<button class="ae-song-result" type="button" data-i="${i}"><img src="${escapeHtml(s.artwork||'')}" alt=""><div><div class="ae-song-result-title">${escapeHtml(s.title)}</div><div class="ae-song-result-artist">${escapeHtml(s.artist||'Unknown artist')}</div></div><span class="ae-song-result-send">Send</span></button>`).join('');
+        results.querySelectorAll('.ae-song-result').forEach(btn=>{
+          btn.onclick=()=>{
+            const s=songs[+btn.dataset.i];
+            const url=s.spotifyUrl||s.itunesUrl||`https://open.spotify.com/search/${encodeURIComponent(s.searchQuery||`${s.title} ${s.artist||''}`)}`;
+            sendChatProtocol(`[[AE_SONG|${encodeURIComponent((s.title||'').slice(0,90))}|${encodeURIComponent((s.artist||'').slice(0,80))}|${encodeURIComponent(url)}]]`);
+            close();
+          };
+        });
+      }catch(e){
+        results.innerHTML=`<div class="ae-song-note">${escapeHtml(e.message||'Search failed.')}</div>`;
+      }
+    };
+    setTimeout(()=>input.focus(),80);
+  }
+
+  function ensureSongTool(){
+    const { input }=chatInput();
+    if(!input||!input.parentElement||document.getElementById('ae-song-trigger')) return;
+    const btn=document.createElement('button');
+    btn.id='ae-song-trigger';
+    btn.className='ae-song-trigger';
+    btn.type='button';
+    btn.title='Send song';
+    btn.textContent='♫';
+    btn.onclick=openSongModal;
+    input.parentElement.insertBefore(btn,input);
+  }
+
   function enhanceChat(){
     if(location.pathname!=='/chat') return;
-    const input=document.querySelector('input[placeholder="Type a message..."]');
-    const sendBtn=input&&input.parentElement&&input.parentElement.querySelector('button');
-    document.querySelectorAll('.chat-bubble-me,.chat-bubble-stranger').forEach(b=>{
-      if(!b.dataset.aeReact){b.dataset.aeReact='1'; const row=document.createElement('div'); row.className='ae-quick-react'; row.innerHTML=EMOJIS.map(e=>`<button type="button">${e}</button>`).join(''); row.addEventListener('click',ev=>{const btn=ev.target.closest('button'); if(!btn||!input||!sendBtn)return; input.value=btn.textContent; input.dispatchEvent(new Event('input',{bubbles:true})); setTimeout(()=>sendBtn.click(),30);}); b.appendChild(row);}
-      if(b.textContent.includes('Song Dedication')&&!b.dataset.aeSongLink){b.dataset.aeSongLink='1'; b.style.cursor='pointer'; b.title='Open on Spotify'; b.addEventListener('click',ev=>{if(ev.target.closest('.ae-quick-react'))return; const lines=b.innerText.split('\n').filter(Boolean); const title=lines.find(x=>!x.includes('Song Dedication')&&!x.match(/AM|PM/))||''; const artist=lines[lines.indexOf(title)+1]||''; if(title) window.open('https://open.spotify.com/search/'+encodeURIComponent(title+' '+artist),'_blank','noopener');});}
-    });
+    renderProtocolBubbles();
+    enhanceChatReactions();
+    ensureSongTool();
   }
   function syncWaitingLounge(){
     const old=document.getElementById('ae-waiting-lounge');

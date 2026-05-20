@@ -16,6 +16,42 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/search', async (req, res) => {
+  try {
+    const q = String(req.query.q || '').trim();
+    if (q.length < 2) return res.json({ songs: [] });
+
+    const url = new URL('https://itunes.apple.com/search');
+    url.searchParams.set('term', q);
+    url.searchParams.set('media', 'music');
+    url.searchParams.set('entity', 'song');
+    url.searchParams.set('limit', '12');
+
+    const response = await fetch(url, { headers: { Accept: 'application/json' } });
+    if (!response.ok) throw new Error(`Search failed: ${response.status}`);
+    const data = await response.json();
+    const songs = (data.results || []).map(item => {
+      const title = item.trackName || 'Untitled song';
+      const artist = item.artistName || '';
+      const query = [title, artist].filter(Boolean).join(' ');
+      return {
+        id: String(item.trackId || `${title}-${artist}`),
+        title,
+        artist,
+        artwork: item.artworkUrl100 || '',
+        previewUrl: item.previewUrl || '',
+        itunesUrl: item.trackViewUrl || '',
+        spotifyUrl: `https://open.spotify.com/search/${encodeURIComponent(query)}`,
+        searchQuery: query
+      };
+    });
+    res.json({ songs });
+  } catch (err) {
+    console.error('Live song search failed:', err.message);
+    res.status(500).json({ message: 'Live song search failed.' });
+  }
+});
+
 router.post('/', protect, adminOnly, (req, res) => {
   uploadSong.single('audio')(req, res, async (uploadErr) => {
     if (uploadErr) {
