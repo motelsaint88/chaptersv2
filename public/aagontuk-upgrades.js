@@ -12,9 +12,11 @@
   function injectPolishStyles(){
     const stale=document.getElementById('ae-final-polish-v6');
     if(stale) stale.remove();
-    if(document.getElementById('ae-final-polish-v7')) return;
+    const staleV7=document.getElementById('ae-final-polish-v7');
+    if(staleV7) staleV7.remove();
+    if(document.getElementById('ae-final-polish-v8')) return;
     const style=document.createElement('style');
-    style.id='ae-final-polish-v7';
+    style.id='ae-final-polish-v8';
     style.textContent=`
       body.ae-cinema-home #ae-regeneration-home{background:#090909!important;overflow:hidden!important}
       body.ae-cinema-home #ae-regeneration-home .rg-page{background:radial-gradient(circle at 50% 44%,rgba(210,173,91,.12),transparent 30%),linear-gradient(180deg,#1a1a1a 0%,#101010 48%,#060606 100%)!important}
@@ -77,28 +79,14 @@
         body:not(.ae-cinema-home) .chat-bubble-me,
         body:not(.ae-cinema-home) .chat-bubble-stranger{max-width:86vw!important}
       }
-      #ae-waiting-lounge{position:fixed;inset:64px 0 0;z-index:45;display:flex;align-items:center;justify-content:center;padding:clamp(18px,4vw,44px);background:radial-gradient(circle at 50% 18%,rgba(217,193,95,.16),transparent 24%),radial-gradient(circle at 20% 82%,rgba(145,112,77,.13),transparent 24%),linear-gradient(180deg,#111 0%,#08080b 70%,#040405 100%);color:#f2ead8;overflow:hidden}
-      #ae-waiting-lounge:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(180deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:72px 72px;opacity:.32;pointer-events:none}
-      #ae-waiting-lounge:after{content:"";position:absolute;left:0;right:0;top:45%;height:1px;background:linear-gradient(90deg,transparent,rgba(230,210,116,.42),transparent);box-shadow:0 0 42px rgba(230,210,116,.22);pointer-events:none}
-      #ae-waiting-lounge .ae-lounge-card{position:relative;width:min(760px,100%);border:1px solid rgba(238,229,203,.14);background:linear-gradient(180deg,rgba(22,22,22,.82),rgba(7,7,8,.88));box-shadow:0 30px 100px rgba(0,0,0,.45);padding:clamp(22px,4vw,42px);text-align:center}
-      #ae-waiting-lounge .ae-lounge-kicker{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.22em;text-transform:uppercase;color:#d8c267;margin-bottom:18px}
-      #ae-waiting-lounge .ae-lounge-title{font-family:"Anton","Bebas Neue",Impact,sans-serif;font-size:clamp(42px,8vw,86px);line-height:.95;letter-spacing:.015em;text-transform:uppercase;margin:0;background:linear-gradient(95deg,#f4ecd8,#d8c267,#b89177);-webkit-background-clip:text;background-clip:text;color:transparent}
-      #ae-waiting-lounge .ae-lounge-copy{max-width:520px;margin:18px auto 0;color:#bfb8aa;font:400 15px/1.7 "DM Sans",system-ui,sans-serif}
-      #ae-waiting-lounge .ae-lounge-track{display:flex;align-items:center;gap:10px;margin:28px auto 0;max-width:480px}
-      #ae-waiting-lounge .ae-lounge-line{height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(238,229,203,.28))}
-      #ae-waiting-lounge .ae-lounge-dot{width:10px;height:10px;border-radius:999px;background:#2bd47e;box-shadow:0 0 22px rgba(43,212,126,.6);animation:aePulse 1.45s ease-in-out infinite}
-      #ae-waiting-lounge .ae-lounge-dot:nth-child(3){animation-delay:.18s}
-      #ae-waiting-lounge .ae-lounge-dot:nth-child(4){animation-delay:.36s}
-      #ae-waiting-lounge .ae-lounge-meta{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:26px;font:600 10px/1 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:#8f897e}
-      #ae-waiting-lounge .ae-lounge-meta span{border:1px solid rgba(238,229,203,.11);padding:9px 11px;background:rgba(255,255,255,.025)}
-      @keyframes aePulse{0%,100%{transform:scale(.82);opacity:.45}50%{transform:scale(1.1);opacity:1}}
-      body.ae-chat-searching .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2 > .flex-1{visibility:visible!important}
+      #ae-waiting-lounge{display:none!important}
+      body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2{min-height:100dvh!important;padding-top:74px!important;background:radial-gradient(circle at 50% 0%,rgba(217,155,66,.08),transparent 34%),#080810!important}
+      body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2 > .glass{position:relative!important;z-index:2!important;display:flex!important;visibility:visible!important;opacity:1!important}
+      body.ae-chat-route .flex-1.overflow-y-auto{position:relative!important;z-index:1!important;visibility:visible!important;opacity:1!important;min-height:0!important;max-height:none!important;background:linear-gradient(180deg,rgba(255,255,255,.026),rgba(0,0,0,.12))!important}
+      body.ae-chat-route .flex-1.overflow-y-auto .h-64{min-height:360px!important;height:auto!important;border:1px solid rgba(238,229,203,.11)!important;background:radial-gradient(circle at 50% 0%,rgba(217,193,95,.13),transparent 34%),rgba(10,10,10,.62)!important}
       @media(max-width:640px){
-        #ae-waiting-lounge{inset:64px 0 0;padding:16px}
-        #ae-waiting-lounge .ae-lounge-card{padding:24px 18px}
-        #ae-waiting-lounge .ae-lounge-copy{font-size:14px}
-        #ae-waiting-lounge .ae-lounge-meta{gap:8px}
-        #ae-waiting-lounge .ae-lounge-meta span{padding:8px 9px}
+        body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2{padding-top:70px!important;padding-left:10px!important;padding-right:10px!important}
+        body.ae-chat-route .flex-1.overflow-y-auto .h-64{min-height:320px!important}
       }
     `;
     document.head.appendChild(style);
@@ -181,22 +169,8 @@
   }
   function syncWaitingLounge(){
     const old=document.getElementById('ae-waiting-lounge');
-    if(location.pathname!=='/chat'){
-      document.body.classList.remove('ae-chat-searching');
-      if(old) old.remove();
-      return;
-    }
-    const hasComposer=!!document.querySelector('input[placeholder="Type a message..."]');
-    const waitingLabel=[...document.querySelectorAll('div')].find(el=>el.children.length===0&&el.textContent.trim()==='WAITING ON THE PLATFORM');
-    const isWaiting=!hasComposer&&!!waitingLabel;
-    document.body.classList.toggle('ae-chat-searching',isWaiting);
-    if(!isWaiting){ if(old) old.remove(); return; }
-    if(old) return;
-    const lounge=document.createElement('section');
-    lounge.id='ae-waiting-lounge';
-    lounge.setAttribute('aria-live','polite');
-    lounge.innerHTML=`<div class="ae-lounge-card"><div class="ae-lounge-kicker">Moonline Waiting Lounge</div><h1 class="ae-lounge-title">Finding A Passenger</h1><p class="ae-lounge-copy">Stay here while the platform pairs you with another live traveler. The compartment will open automatically when someone joins.</p><div class="ae-lounge-track"><i class="ae-lounge-line"></i><i class="ae-lounge-dot"></i><i class="ae-lounge-dot"></i><i class="ae-lounge-dot"></i><i class="ae-lounge-line"></i></div><div class="ae-lounge-meta"><span>Private match</span><span>Live queue</span><span>Auto connect</span></div></div>`;
-    document.body.appendChild(lounge);
+    document.body.classList.remove('ae-chat-searching');
+    if(old) old.remove();
   }
   function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
   function tick(){try{injectPolishStyles();fetchConfig();enhanceChat();syncWaitingLounge();}catch(e){}}
