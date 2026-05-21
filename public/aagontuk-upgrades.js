@@ -168,6 +168,13 @@
       .ae-staff-card{border:1px solid rgba(238,229,203,.08);border-radius:16px;background:rgba(255,255,255,.03);padding:13px;color:#eee5cb}
       .ae-staff-card b{display:block;font:800 14px/1.25 "DM Sans",system-ui,sans-serif;color:#fff6df;margin-bottom:5px}
       .ae-staff-card p{margin:6px 0;color:#bdb7d4;font:500 13px/1.45 "DM Sans",system-ui,sans-serif}
+      .ae-report-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:11px 0}
+      .ae-report-detail{min-width:0;border:1px solid rgba(238,229,203,.08);border-radius:12px;background:rgba(0,0,0,.16);padding:9px}
+      .ae-report-detail span,.ae-report-block small{display:block;margin-bottom:5px;font:800 9px/1.2 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:#d9c15f}
+      .ae-report-detail strong{display:block;overflow-wrap:anywhere;font:700 12px/1.35 "DM Sans",system-ui,sans-serif;color:#fff6df}
+      .ae-report-block{border-left:3px solid rgba(217,193,95,.55);border-radius:12px;background:rgba(217,193,95,.055);padding:10px 11px;margin:10px 0}
+      .ae-report-block p{overflow-wrap:anywhere;color:#eee5cb!important;margin:0!important}
+      .ae-report-reason{border-left-color:rgba(255,255,255,.18);background:rgba(255,255,255,.035)}
       .ae-staff-meta{font:700 10px/1.4 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:#d9c15f}
       .ae-staff-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
       .ae-staff-search{display:flex;gap:8px;margin:12px 0}
@@ -205,6 +212,7 @@
         .ae-song-trigger{height:48px;width:48px;border-radius:16px}
         .ae-song-modal{padding:10px;align-items:flex-end}
         .ae-song-sheet{border-radius:24px;max-height:86dvh}
+        .ae-report-detail-grid{grid-template-columns:1fr}
       }
       #ae-waiting-lounge{display:none!important}
       body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2{min-height:100dvh!important;padding-top:74px!important;padding-left:clamp(12px,2.4vw,48px)!important;padding-right:clamp(12px,2.4vw,48px)!important;background:radial-gradient(circle at 50% 0%,rgba(217,155,66,.08),transparent 34%),#080810!important;overflow-x:hidden!important}
@@ -578,10 +586,23 @@
     },true);
   }
 
+  function bubbleMessageTime(b){
+    const lines=(b.innerText||b.textContent||'').split('\n').map(x=>x.trim()).filter(Boolean);
+    return lines.find(x=>/^\d{1,2}:\d{2}\s*(AM|PM)?$/i.test(x))||'';
+  }
+
+  function visibleSessionHint(){
+    const text=(document.body.innerText||'').replace(/\s+/g,' ');
+    const m=text.match(/Session:\s*([a-z0-9-]{8,})/i);
+    return m?m[1]:'';
+  }
+
   function openReportModal(b){
     if(document.getElementById('ae-report-modal')) return;
     const text=cleanBubbleText(b)||'Message';
-    const isOwn=sideForBubble(b)==='me';
+    const side=sideForBubble(b);
+    const isOwn=side==='me';
+    const messageTime=bubbleMessageTime(b);
     const modal=document.createElement('div');
     modal.id='ae-report-modal';
     modal.className='ae-report-modal';
@@ -594,7 +615,7 @@
       const reason=modal.querySelector('textarea').value.trim();
       if(reason.length<5){modal.querySelector('textarea').focus();return;}
       try{
-        const r=await fetch('/api/reports',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token()},body:JSON.stringify({type:isOwn?'message':'passenger',messageText:text,messageSide:sideForBubble(b),reportedUser:isOwn?'Own message':'Stranger passenger',reason})});
+        const r=await fetch('/api/reports',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token()},body:JSON.stringify({type:isOwn?'message':'passenger',messageText:text,messageSide:side,messageTime,reportedUser:isOwn?'Reporter own message':'Stranger passenger',reason,chatSession:visibleSessionHint(),pageUrl:location.href})});
         const d=await r.json().catch(()=>({}));
         if(!r.ok) throw new Error(d.message||'Report failed');
         close();
@@ -620,6 +641,29 @@
     const d=await r.json().catch(()=>({}));
     if(!r.ok) throw new Error(d.message||'Request failed');
     return d;
+  }
+
+  function reportPerson(p,name,email){
+    const n=(p&&p.name)||name||'Unknown passenger';
+    const e=(p&&p.email)||email||'';
+    return e?`${n} / ${e}`:n;
+  }
+
+  function shortDate(s){
+    if(!s) return '';
+    const d=new Date(s);
+    return Number.isNaN(d.getTime())?String(s):d.toLocaleString();
+  }
+
+  function renderReportCard(r,type){
+    const reporter=reportPerson(r.reportedBy,r.reporterName,r.reporterEmail);
+    const reported=r.reportedUser||((r.type||type)==='people'?'Passenger account':'Chat message');
+    const when=r.messageTime||shortDate(r.createdAt)||'Unknown';
+    const reviewed=r.reviewedBy?`<div class="ae-staff-meta">Reviewed by ${escapeHtml(r.reviewedBy.name||'staff')}${r.reviewNote?`: ${escapeHtml(r.reviewNote)}`:''}</div>`:'';
+    const session=r.chatSession?`<div class="ae-staff-meta">Session: ${escapeHtml(r.chatSession)}</div>`:'';
+    const page=r.pageUrl?`<div class="ae-staff-meta">Page: ${escapeHtml(r.pageUrl)}</div>`:'';
+    const message=r.messageText?`<div class="ae-report-block"><small>Reported message</small><p>${escapeHtml(r.messageText)}</p></div>`:'<div class="ae-report-block"><small>Reported message</small><p>No message snapshot was saved for this older report.</p></div>';
+    return `<article class="ae-staff-card"><div class="ae-staff-meta">${escapeHtml(r.type||type)} report - ${escapeHtml(r.status||'pending')}</div><b>${escapeHtml(reported)}</b><div class="ae-report-detail-grid"><div class="ae-report-detail"><span>Reported by</span><strong>${escapeHtml(reporter)}</strong></div><div class="ae-report-detail"><span>Reported item</span><strong>${escapeHtml(reported)}</strong></div><div class="ae-report-detail"><span>Message side</span><strong>${escapeHtml(r.messageSide||'unknown')}</strong></div><div class="ae-report-detail"><span>When</span><strong>${escapeHtml(when)}</strong></div></div>${message}<div class="ae-report-block ae-report-reason"><small>Reporter comment</small><p>${escapeHtml(r.reason||'No comment provided.')}</p></div>${session}${page}${reviewed}<div class="ae-staff-actions"><button class="primary" data-report="${r._id}" data-status="reviewed">Reviewed</button><button data-report="${r._id}" data-status="actioned">Actioned</button><button data-report="${r._id}" data-status="dismissed">Dismiss</button></div></article>`;
   }
 
   function renderStaffTriage(){
@@ -653,10 +697,11 @@
         return;
       }
       const type=tab==='people'?'people':'message';
-      const d=await apiJson('/api/moderator/reports?status=pending&type='+type+'&limit=30');
+      const d=await apiJson('/api/moderator/reports?type='+type+'&limit=30');
       const reports=d.reports||[];
       let html=tab==='people'?'<div class="ae-staff-search"><input placeholder="Search passenger to temporarily suspend"><button data-user-search>Search</button></div><div id="ae-user-results"></div>':'';
       html+=reports.length?`<div class="ae-staff-grid">${reports.map(r=>`<article class="ae-staff-card"><div class="ae-staff-meta">${escapeHtml(r.type||type)} report · ${escapeHtml(r.status||'pending')}</div><b>${escapeHtml(r.reportedUser||'Chat report')}</b>${r.messageText?`<p>${escapeHtml(r.messageText)}</p>`:''}<p>${escapeHtml(r.reason||'')}</p><div class="ae-staff-actions"><button class="primary" data-report="${r._id}" data-status="reviewed">Reviewed</button><button data-report="${r._id}" data-status="actioned">Actioned</button><button data-report="${r._id}" data-status="dismissed">Dismiss</button></div></article>`).join('')}</div>`:'<div class="ae-song-note">No pending reports.</div>';
+      html=(tab==='people'?'<div class="ae-staff-search"><input placeholder="Search passenger to temporarily suspend"><button data-user-search>Search</button></div><div id="ae-user-results"></div>':'')+(reports.length?`<div class="ae-staff-grid">${reports.map(r=>renderReportCard(r,type)).join('')}</div>`:'<div class="ae-song-note">No pending reports.</div>');
       body.innerHTML=html;
       body.querySelectorAll('[data-report]').forEach(btn=>btn.onclick=async()=>{await apiJson(`/api/moderator/reports/${btn.dataset.report}`,{method:'PUT',body:JSON.stringify({status:btn.dataset.status})});showToast('Report updated.');loadStaffTab(tab);});
       const search=body.querySelector('[data-user-search]');

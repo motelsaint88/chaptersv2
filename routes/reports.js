@@ -7,20 +7,25 @@ const { protect, modOrAdmin, adminOnly } = require('../middleware/auth');
 // @POST /api/reports - Submit a report
 router.post('/', protect, async (req, res) => {
   try {
-    const { reportedSocketId, reportedUser, reason, chatSession, type, messageText, messageSide } = req.body;
+    const { reportedSocketId, reportedUser, reason, chatSession, type, messageText, messageSide, messageTime, pageUrl } = req.body;
     if (!reason || reason.trim().length < 5) {
       return res.status(400).json({ message: 'Please provide a reason for the report.' });
     }
     const cleanType = ['message', 'passenger', 'people'].includes(type) ? type : 'message';
+    const fallbackReported = cleanType === 'passenger' ? 'Stranger passenger' : cleanType === 'people' ? 'Passenger account' : 'Reported message';
     const report = await Report.create({
       reportedBy: req.user._id,
+      reporterName: req.user.name || '',
+      reporterEmail: req.user.email || '',
       type: cleanType,
-      reportedUser: reportedUser || '',
-      reportedSocketId: reportedSocketId || '',
+      reportedUser: String(reportedUser || fallbackReported).trim().substring(0, 180),
+      reportedSocketId: String(reportedSocketId || '').trim().substring(0, 120),
       messageText: String(messageText || '').trim().substring(0, 1000),
       messageSide: ['me', 'stranger'].includes(messageSide) ? messageSide : 'unknown',
-      reason: reason.trim(),
-      chatSession: chatSession || '',
+      messageTime: String(messageTime || '').trim().substring(0, 80),
+      reason: reason.trim().substring(0, 500),
+      chatSession: String(chatSession || '').trim().substring(0, 160),
+      pageUrl: String(pageUrl || '').trim().substring(0, 300),
       status: 'pending'
     });
     res.status(201).json({ message: 'Your report has been sent to station staff.', report });
