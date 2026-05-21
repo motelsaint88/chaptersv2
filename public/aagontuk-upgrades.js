@@ -137,10 +137,10 @@
       .chat-bubble-me,.chat-bubble-stranger{position:relative!important;z-index:1}
       .chat-bubble-me:hover,.chat-bubble-stranger:hover{z-index:9}
       .chat-bubble-me:hover .ae-bubble-more,.chat-bubble-stranger:hover .ae-bubble-more,.ae-bubble-more[aria-expanded="true"]{opacity:1}
-      .ae-bubble-menu{position:absolute;right:10px;top:43px;z-index:50;width:148px;padding:6px;border-radius:16px;border:1px solid rgba(238,229,203,.12);background:rgba(12,12,16,.97);box-shadow:0 18px 48px rgba(0,0,0,.42)}
+      .ae-bubble-menu{position:fixed;z-index:2147483636;width:148px;padding:6px;border-radius:16px;border:1px solid rgba(238,229,203,.12);background:rgba(12,12,16,.97);box-shadow:0 18px 48px rgba(0,0,0,.42)}
       .ae-bubble-menu button{width:100%;height:34px;border:0;border-radius:11px;background:transparent;color:#eee5cb;display:flex;align-items:center;gap:9px;padding:0 10px;font:700 12px/1 "DM Sans",system-ui,sans-serif;cursor:pointer;text-align:left}
       .ae-bubble-menu button:hover{background:rgba(217,193,95,.12);color:#f2df83}
-      .ae-react-pop{position:absolute;right:10px;top:43px;z-index:51;display:flex;gap:6px;padding:8px;border-radius:999px;border:1px solid rgba(238,229,203,.12);background:rgba(12,12,16,.97);box-shadow:0 18px 48px rgba(0,0,0,.42)}
+      .ae-react-pop{position:fixed;z-index:2147483637;display:flex;gap:6px;padding:8px;border-radius:999px;border:1px solid rgba(238,229,203,.12);background:rgba(12,12,16,.97);box-shadow:0 18px 48px rgba(0,0,0,.42)}
       .ae-react-pop button{width:32px;height:32px;border-radius:999px;border:1px solid rgba(238,229,203,.08);background:rgba(255,255,255,.04);cursor:pointer;font-size:15px}
       .ae-react-pop button:hover{background:rgba(217,193,95,.15);transform:translateY(-1px)}
       .ae-reply-preview{display:flex;align-items:center;justify-content:space-between;gap:10px;width:min(720px,100%);margin:0 auto 10px;padding:10px 12px;border-radius:16px;border:1px solid rgba(217,193,95,.16);background:rgba(217,193,95,.08);color:#eee5cb}
@@ -207,12 +207,17 @@
         .ae-song-sheet{border-radius:24px;max-height:86dvh}
       }
       #ae-waiting-lounge{display:none!important}
-      body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2{min-height:100dvh!important;padding-top:74px!important;background:radial-gradient(circle at 50% 0%,rgba(217,155,66,.08),transparent 34%),#080810!important}
+      body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2{min-height:100dvh!important;padding-top:74px!important;padding-left:clamp(12px,2.4vw,48px)!important;padding-right:clamp(12px,2.4vw,48px)!important;background:radial-gradient(circle at 50% 0%,rgba(217,155,66,.08),transparent 34%),#080810!important;overflow-x:hidden!important}
       body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2 > .glass{position:relative!important;z-index:2!important;display:flex!important;visibility:visible!important;opacity:1!important}
-      body.ae-chat-route .flex-1.overflow-y-auto{position:relative!important;z-index:1!important;visibility:visible!important;opacity:1!important;min-height:0!important;max-height:none!important;background:linear-gradient(180deg,rgba(255,255,255,.026),rgba(0,0,0,.12))!important}
+      body.ae-chat-route .max-w-3xl{width:min(100%,820px)!important;margin-left:auto!important;margin-right:auto!important}
+      body.ae-chat-route .flex-1.overflow-y-auto{position:relative!important;z-index:1!important;visibility:visible!important;opacity:1!important;min-height:0!important;max-height:none!important;width:min(100%,820px)!important;margin-left:auto!important;margin-right:auto!important;overflow-x:visible!important;background:linear-gradient(180deg,rgba(255,255,255,.026),rgba(0,0,0,.12))!important}
+      body.ae-chat-route .rounded-t-2xl{width:min(100%,820px)!important;margin-left:auto!important;margin-right:auto!important}
+      body.ae-chat-route .chat-bubble-me,body.ae-chat-route .chat-bubble-stranger{max-width:min(74vw,520px)!important}
       body.ae-chat-route .flex-1.overflow-y-auto .h-64{min-height:360px!important;height:auto!important;border:1px solid rgba(238,229,203,.11)!important;background:radial-gradient(circle at 50% 0%,rgba(217,193,95,.13),transparent 34%),rgba(10,10,10,.62)!important}
       @media(max-width:640px){
         body.ae-chat-route .min-h-screen.bg-night-950.flex.flex-col.pt-16.px-2{padding-top:70px!important;padding-left:10px!important;padding-right:10px!important}
+        body.ae-chat-route .max-w-3xl,body.ae-chat-route .flex-1.overflow-y-auto,body.ae-chat-route .rounded-t-2xl{width:100%!important}
+        body.ae-chat-route .chat-bubble-me,body.ae-chat-route .chat-bubble-stranger{max-width:calc(100vw - 46px)!important}
         body.ae-chat-route .flex-1.overflow-y-auto .h-64{min-height:320px!important}
       }
     `;
@@ -419,6 +424,29 @@
     pill.textContent=emoji;
   }
 
+  function placeFloating(el,anchor,preferred='menu'){
+    const rect=anchor.getBoundingClientRect();
+    const vw=Math.max(document.documentElement.clientWidth,window.innerWidth||0);
+    const vh=Math.max(document.documentElement.clientHeight,window.innerHeight||0);
+    const width=preferred==='react'?Math.min(340,vw-20):148;
+    el.style.width=preferred==='react'?'auto':width+'px';
+    document.body.appendChild(el);
+    const box=el.getBoundingClientRect();
+    let left=rect.left;
+    if(left+box.width>vw-10) left=vw-box.width-10;
+    if(left<10) left=10;
+    let top=rect.bottom+8;
+    if(top+box.height>vh-10) top=rect.top-box.height-8;
+    if(top<10) top=10;
+    el.style.left=Math.round(left)+'px';
+    el.style.top=Math.round(top)+'px';
+  }
+
+  function closeChatFloaters(){
+    document.querySelectorAll('.ae-bubble-menu,.ae-react-pop').forEach(x=>x.remove());
+    document.querySelectorAll('.ae-bubble-more').forEach(x=>x.setAttribute('aria-expanded','false'));
+  }
+
   function renderProtocolBubbles(){
     document.querySelectorAll('.chat-bubble-me,.chat-bubble-stranger').forEach(b=>{
       const line=chatBubbleLine(b);
@@ -465,9 +493,8 @@
         more.textContent='⋯';
         more.onclick=ev=>{
           ev.preventDefault(); ev.stopPropagation();
-          document.querySelectorAll('.ae-bubble-menu,.ae-react-pop').forEach(x=>x.remove());
+          closeChatFloaters();
           const open=more.getAttribute('aria-expanded')==='true';
-          document.querySelectorAll('.ae-bubble-more').forEach(x=>x.setAttribute('aria-expanded','false'));
           if(open) return;
           more.setAttribute('aria-expanded','true');
           const menu=document.createElement('div');
@@ -480,9 +507,9 @@
             if(action==='reply') startReply(b);
             if(action==='react') showReactPicker(b,more);
             if(action==='report') openReportModal(b);
-            if(action!=='react'){ menu.remove(); more.setAttribute('aria-expanded','false'); }
+            if(action!=='react') closeChatFloaters();
           };
-          b.appendChild(menu);
+          placeFloating(menu,more,'menu');
         };
         b.appendChild(more);
       }
@@ -509,10 +536,9 @@
       const index=indexForBubble(b);
       addReactionToBubble(b,emoji,'me');
       sendChatProtocol(`[[AE_REACTION|${side}|${index}|${encodeURIComponent(emoji)}]]`);
-      pop.remove();
-      more.setAttribute('aria-expanded','false');
+      closeChatFloaters();
     };
-    b.appendChild(pop);
+    placeFloating(pop,more,'react');
   }
 
   function startReply(b){
@@ -718,6 +744,9 @@
   function tick(){try{injectPolishStyles();ensureCinemaHome();fetchConfig();enhanceChat();renderStaffTriage();syncWaitingLounge();}catch(e){}}
   ['pushState','replaceState'].forEach(k=>{const o=history[k];history[k]=function(){const r=o.apply(this,arguments);setTimeout(tick,80);return r;};});
   addEventListener('popstate',()=>setTimeout(tick,80));
+  addEventListener('resize',closeChatFloaters,{passive:true});
+  addEventListener('scroll',closeChatFloaters,{passive:true,capture:true});
+  document.addEventListener('click',ev=>{if(!ev.target.closest('.ae-bubble-menu,.ae-react-pop,.ae-bubble-more')) closeChatFloaters();});
   setInterval(()=>{try{injectPolishStyles();ensureCinemaHome();updateHomeShell();if(lastConfig&&lastConfig.config) applyHome(lastConfig.config);enhanceChat();renderStaffTriage();syncWaitingLounge();}catch(e){}},700);
   setInterval(fetchConfig,15000);
   injectPolishStyles();
