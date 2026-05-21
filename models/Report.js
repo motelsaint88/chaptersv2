@@ -2,8 +2,15 @@ const mongoose = require('mongoose');
 
 const reportSchema = new mongoose.Schema({
   reportedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  type: {
+    type: String,
+    enum: ['message', 'passenger', 'people'],
+    default: 'message'
+  },
   reportedUser: { type: String },
   reportedSocketId: { type: String },
+  messageText: { type: String, maxlength: 1000 },
+  messageSide: { type: String, enum: ['me', 'stranger', 'unknown'], default: 'unknown' },
   reason: { type: String, required: true, maxlength: 500 },
   chatSession: { type: String },
   status: {

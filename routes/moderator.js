@@ -10,12 +10,14 @@ router.use(protect, modOrAdmin);
 // @GET /api/moderator/stats
 router.get('/stats', async (req, res) => {
   try {
-    const [pendingConf, pendingReports, totalReports] = await Promise.all([
+    const [pendingConf, pendingReports, messageReports, peopleReports, totalReports] = await Promise.all([
       Confession.countDocuments({ status: 'pending' }),
       Report.countDocuments({ status: 'pending' }),
+      Report.countDocuments({ status: 'pending', type: 'message' }),
+      Report.countDocuments({ status: 'pending', type: { $in: ['passenger', 'people'] } }),
       Report.countDocuments()
     ]);
-    res.json({ pendingConf, pendingReports, totalReports });
+    res.json({ pendingConf, pendingReports, messageReports, peopleReports, totalReports });
   } catch (err) {
     res.status(500).json({ message: 'Failed to load moderator stats.' });
   }
@@ -24,8 +26,9 @@ router.get('/stats', async (req, res) => {
 // @GET /api/moderator/reports
 router.get('/reports', async (req, res) => {
   try {
-    const { status, page = 1, limit = 20 } = req.query;
+    const { status, type, page = 1, limit = 20 } = req.query;
     const query = status ? { status } : {};
+    if (type) query.type = type === 'people' ? { $in: ['passenger', 'people'] } : type;
     const total = await Report.countDocuments(query);
     const reports = await Report.find(query)
       .sort({ createdAt: -1 })
@@ -36,6 +39,55 @@ router.get('/reports', async (req, res) => {
     res.json({ reports, total });
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch reports.' });
+  }
+});
+
+// @GET /api/moderator/users - search passengers for temporary suspension
+router.get('/users', async (req, res) => {
+  try {
+    const { search = '', limit = 20 } = req.query;
+    const query = search ? {
+      $or: [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ]
+    } : {};
+    const users = await User.find(query)
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit))
+      .select('name email role isBanned banReason banUntil banType');
+    res.json({ users });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to search passengers.' });
+  }
+});
+
+// @PUT /api/moderator/users/:id/suspend - temporary suspension only
+router.put('/users/:id/suspend', async (req, res) => {
+  try {
+    const { hours = 24, reason = '' } = req.body;
+    const safeHours = Math.max(1, Math.min(parseInt(hours) || 24, 168));
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'Passenger not found.' });
+    if (user.role === 'admin' || user.email === 'n.i.farhan44@gmail.com') {
+      return res.status(403).json({ message: 'Cannot suspend admin.' });
+    }
+    user.isBanned = true;
+    user.banType = 'temporary';
+    user.banUntil = new Date(Date.now() + safeHours * 60 * 60 * 1000);
+    user.banReason = reason || `Temporarily suspended by station staff for ${safeHours} hours.`;
+    user.suspendedBy = req.user._id;
+    await user.save();
+    await Report.create({
+      reportedBy: req.user._id,
+      type: 'people',
+      reportedUser: `${user.name} <${user.email}>`,
+      reason: `Temporary suspension: ${user.banReason}`,
+      status: 'pending'
+    });
+    res.json({ message: `Passenger temporarily suspended for ${safeHours} hours.`, user });
+  } catch (err) {
+    res.status(500).json({ message: 'Temporary suspension failed.' });
   }
 });
 

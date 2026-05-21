@@ -7,13 +7,18 @@ const { protect, modOrAdmin, adminOnly } = require('../middleware/auth');
 // @POST /api/reports - Submit a report
 router.post('/', protect, async (req, res) => {
   try {
-    const { reportedSocketId, reason, chatSession } = req.body;
+    const { reportedSocketId, reportedUser, reason, chatSession, type, messageText, messageSide } = req.body;
     if (!reason || reason.trim().length < 5) {
       return res.status(400).json({ message: 'Please provide a reason for the report.' });
     }
+    const cleanType = ['message', 'passenger', 'people'].includes(type) ? type : 'message';
     const report = await Report.create({
       reportedBy: req.user._id,
+      type: cleanType,
+      reportedUser: reportedUser || '',
       reportedSocketId: reportedSocketId || '',
+      messageText: String(messageText || '').trim().substring(0, 1000),
+      messageSide: ['me', 'stranger'].includes(messageSide) ? messageSide : 'unknown',
       reason: reason.trim(),
       chatSession: chatSession || '',
       status: 'pending'
@@ -27,8 +32,9 @@ router.post('/', protect, async (req, res) => {
 // @GET /api/reports - Mod/Admin: get reports
 router.get('/', protect, modOrAdmin, async (req, res) => {
   try {
-    const { status, page = 1, limit = 20 } = req.query;
+    const { status, type, page = 1, limit = 20 } = req.query;
     const query = status ? { status } : {};
+    if (type) query.type = type;
     const total = await Report.countDocuments(query);
     const reports = await Report.find(query)
       .sort({ createdAt: -1 })

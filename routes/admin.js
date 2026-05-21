@@ -113,6 +113,8 @@ router.put('/users/:id/ban', async (req, res) => {
     }
     user.isBanned = banned;
     user.banReason = reason || '';
+    user.banType = banned ? 'permanent' : '';
+    user.banUntil = null;
     await user.save();
     res.json({ message: `Passenger ${banned ? 'removed from' : 'restored to'} the train.`, user });
   } catch (err) {

@@ -17,6 +17,9 @@ const userSchema = new mongoose.Schema({
   authProvider: { type: String, enum: ['local', 'google'], default: 'local' },
   isBanned: { type: Boolean, default: false },
   banReason: { type: String },
+  banUntil: { type: Date },
+  banType: { type: String, enum: ['temporary', 'permanent', ''], default: '' },
+  suspendedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   journeyCount: { type: Number, default: 0 },
   lastSeen: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now }

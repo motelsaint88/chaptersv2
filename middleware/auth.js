@@ -17,6 +17,13 @@ const protect = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: 'Passenger not found. Invalid boarding pass.' });
     }
+    if (user.isBanned && user.banUntil && user.banUntil <= new Date()) {
+      user.isBanned = false;
+      user.banReason = '';
+      user.banUntil = null;
+      user.banType = '';
+      await user.save();
+    }
     if (user.isBanned) {
       return res.status(403).json({ message: 'Your boarding pass has been revoked.' });
     }

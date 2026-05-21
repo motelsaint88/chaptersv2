@@ -8,6 +8,8 @@
   const authed=()=>!!token();
   const admin=()=>{const u=user();return !!u&&(u.role==='admin'||u.email==='n.i.farhan44@gmail.com')};
   let lastConfig=null;
+  let aeReplyTarget=null;
+  let aeBypassSend=false;
 
   function injectPolishStyles(){
     const stale=document.getElementById('ae-final-polish-v6');
@@ -131,6 +133,45 @@
       .ae-reaction-bar{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;min-height:20px}
       .ae-reaction-pill{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:23px;padding:0 8px;border-radius:999px;border:1px solid rgba(217,193,95,.22);background:rgba(217,193,95,.12);box-shadow:0 8px 22px rgba(0,0,0,.18);font-size:14px}
       .ae-protocol-hidden{display:none!important}
+      .ae-bubble-more{position:absolute;top:10px;right:12px;z-index:8;width:30px;height:30px;border-radius:999px;border:1px solid rgba(238,229,203,.09);background:rgba(0,0,0,.22);color:#d6cfbd;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:.16s ease;font-size:18px;line-height:1}
+      .chat-bubble-me,.chat-bubble-stranger{position:relative!important;z-index:1}
+      .chat-bubble-me:hover,.chat-bubble-stranger:hover{z-index:9}
+      .chat-bubble-me:hover .ae-bubble-more,.chat-bubble-stranger:hover .ae-bubble-more,.ae-bubble-more[aria-expanded="true"]{opacity:1}
+      .ae-bubble-menu{position:absolute;right:10px;top:43px;z-index:50;width:148px;padding:6px;border-radius:16px;border:1px solid rgba(238,229,203,.12);background:rgba(12,12,16,.97);box-shadow:0 18px 48px rgba(0,0,0,.42)}
+      .ae-bubble-menu button{width:100%;height:34px;border:0;border-radius:11px;background:transparent;color:#eee5cb;display:flex;align-items:center;gap:9px;padding:0 10px;font:700 12px/1 "DM Sans",system-ui,sans-serif;cursor:pointer;text-align:left}
+      .ae-bubble-menu button:hover{background:rgba(217,193,95,.12);color:#f2df83}
+      .ae-react-pop{position:absolute;right:10px;top:43px;z-index:51;display:flex;gap:6px;padding:8px;border-radius:999px;border:1px solid rgba(238,229,203,.12);background:rgba(12,12,16,.97);box-shadow:0 18px 48px rgba(0,0,0,.42)}
+      .ae-react-pop button{width:32px;height:32px;border-radius:999px;border:1px solid rgba(238,229,203,.08);background:rgba(255,255,255,.04);cursor:pointer;font-size:15px}
+      .ae-react-pop button:hover{background:rgba(217,193,95,.15);transform:translateY(-1px)}
+      .ae-reply-preview{display:flex;align-items:center;justify-content:space-between;gap:10px;width:min(720px,100%);margin:0 auto 10px;padding:10px 12px;border-radius:16px;border:1px solid rgba(217,193,95,.16);background:rgba(217,193,95,.08);color:#eee5cb}
+      .ae-reply-preview b{font:800 10px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#d9c15f;display:block;margin-bottom:4px}
+      .ae-reply-preview span{display:block;max-width:62vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 13px/1.3 "DM Sans",system-ui,sans-serif}
+      .ae-reply-preview button{border:0;background:transparent;color:#eee5cb;font-size:20px;cursor:pointer}
+      .ae-reply-card{border-left:3px solid rgba(217,193,95,.72);padding:8px 10px;margin-bottom:10px;border-radius:10px;background:rgba(217,193,95,.08)}
+      .ae-reply-card small{display:block;font:800 10px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:#d9c15f;margin-bottom:5px}
+      .ae-reply-card span{display:block;font:600 13px/1.35 "DM Sans",system-ui,sans-serif;color:#d6cfbd}
+      .ae-report-modal{position:fixed;inset:0;z-index:2147483641;background:rgba(3,3,6,.72);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:16px}
+      .ae-report-sheet{width:min(480px,100%);border:1px solid rgba(238,229,203,.13);border-radius:24px;background:linear-gradient(180deg,rgba(20,20,28,.98),rgba(8,8,12,.98));box-shadow:0 30px 90px rgba(0,0,0,.56);padding:18px}
+      .ae-report-sheet h3{font:800 18px/1.2 "DM Sans",system-ui,sans-serif;color:#fff6df;margin:0 0 8px}
+      .ae-report-sheet p{font:500 13px/1.45 "DM Sans",system-ui,sans-serif;color:#9b96bb;margin:0 0 14px}
+      .ae-report-sheet textarea{width:100%;min-height:96px;resize:vertical;border-radius:16px;border:1px solid rgba(238,229,203,.13);background:#0c0c13;color:#eee5cb;padding:12px;font:500 14px/1.4 "DM Sans",system-ui,sans-serif}
+      .ae-report-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+      .ae-report-actions button{height:40px;border-radius:14px;padding:0 16px;border:1px solid rgba(238,229,203,.13);background:rgba(255,255,255,.04);color:#eee5cb;cursor:pointer;font:800 12px/1 "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.08em}
+      .ae-report-actions button.primary{border:0;background:#d9b14e;color:#090909}
+      .ae-staff-triage{max-width:1120px;margin:0 auto 22px;padding:18px;border:1px solid rgba(238,229,203,.10);border-radius:22px;background:rgba(10,10,16,.62);box-shadow:0 24px 70px rgba(0,0,0,.28)}
+      .ae-staff-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}
+      .ae-staff-head h2{margin:0;font:800 22px/1.1 "DM Sans",system-ui,sans-serif;color:#fff6df}
+      .ae-staff-tabs{display:flex;gap:8px;flex-wrap:wrap}
+      .ae-staff-tabs button,.ae-staff-card button,.ae-staff-search button{height:34px;border-radius:999px;border:1px solid rgba(238,229,203,.13);background:rgba(255,255,255,.035);color:#eee5cb;padding:0 12px;cursor:pointer;font:800 11px/1 "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em}
+      .ae-staff-tabs button.active,.ae-staff-card button.primary,.ae-staff-search button{border-color:transparent;background:#d9b14e;color:#090909}
+      .ae-staff-grid{display:grid;gap:10px}
+      .ae-staff-card{border:1px solid rgba(238,229,203,.08);border-radius:16px;background:rgba(255,255,255,.03);padding:13px;color:#eee5cb}
+      .ae-staff-card b{display:block;font:800 14px/1.25 "DM Sans",system-ui,sans-serif;color:#fff6df;margin-bottom:5px}
+      .ae-staff-card p{margin:6px 0;color:#bdb7d4;font:500 13px/1.45 "DM Sans",system-ui,sans-serif}
+      .ae-staff-meta{font:700 10px/1.4 "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:#d9c15f}
+      .ae-staff-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+      .ae-staff-search{display:flex;gap:8px;margin:12px 0}
+      .ae-staff-search input{flex:1;min-width:0;border-radius:14px;border:1px solid rgba(238,229,203,.13);background:#0c0c13;color:#eee5cb;padding:0 12px;height:40px}
       .ae-chat-song-card{min-width:min(360px,70vw);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:13px;border:1px solid rgba(217,193,95,.20);background:radial-gradient(circle at 0 0,rgba(217,193,95,.16),transparent 34%),rgba(9,9,11,.46);border-radius:18px;padding:13px 14px;margin:-2px 0;color:#eee5cb;cursor:pointer}
       .ae-chat-song-art{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,rgba(217,193,95,.28),rgba(255,255,255,.05));display:flex;align-items:center;justify-content:center;color:#ead95f;font-size:19px}
       .ae-chat-song-k{font:600 10px/1 "IBM Plex Mono",monospace;letter-spacing:.18em;text-transform:uppercase;color:#d9c15f;margin-bottom:5px}
@@ -304,12 +345,20 @@
     return { input, sendBtn };
   }
 
+  function setNativeInputValue(input,value){
+    const setter=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value')?.set;
+    if(setter) setter.call(input,value);
+    else input.value=value;
+    input.dispatchEvent(new Event('input',{bubbles:true}));
+    input.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+
   function sendChatProtocol(text){
     const { input, sendBtn }=chatInput();
     if(!input||!sendBtn) return false;
-    input.value=text;
-    input.dispatchEvent(new Event('input',{bubbles:true}));
-    setTimeout(()=>sendBtn.click(),25);
+    setNativeInputValue(input,text);
+    aeBypassSend=true;
+    setTimeout(()=>{sendBtn.click(); setTimeout(()=>{aeBypassSend=false;},60);},80);
     return true;
   }
 
@@ -335,6 +384,17 @@
     }catch{return null;}
   }
 
+  function parseReplyProtocol(text){
+    const m=String(text||'').match(/\[\[AE_REPLY\|([^|]*)\|([^]*?)\]\]/);
+    if(!m) return null;
+    try{
+      return {
+        quote:decodeURIComponent(m[1]||''),
+        body:decodeURIComponent(m[2]||'')
+      };
+    }catch{return null;}
+  }
+
   function sideForBubble(b){
     return b.classList.contains('chat-bubble-me')?'me':'stranger';
   }
@@ -349,14 +409,14 @@
     return protocolSide==='me'?'stranger':'me';
   }
 
-  function addReactionToBubble(target, emoji){
+  function addReactionToBubble(target, emoji, source='me'){
     if(!target) return;
     let bar=target.querySelector(':scope > .ae-reaction-bar');
     if(!bar){ bar=document.createElement('div'); bar.className='ae-reaction-bar'; target.appendChild(bar); }
-    const pill=document.createElement('span');
+    let pill=bar.querySelector(`[data-source="${source}"]`);
+    if(!pill){ pill=document.createElement('span'); pill.className='ae-reaction-pill'; pill.dataset.source=source; bar.appendChild(pill); }
     pill.className='ae-reaction-pill';
     pill.textContent=emoji;
-    bar.appendChild(pill);
   }
 
   function renderProtocolBubbles(){
@@ -370,10 +430,15 @@
           if(sideForBubble(b)!=='me'){
             const targetSide=targetSideForProtocol(reaction.side,b);
             const target=[...document.querySelectorAll('.chat-bubble-'+targetSide)].filter(x=>!x.classList.contains('ae-protocol-hidden'))[reaction.index];
-            addReactionToBubble(target,reaction.emoji);
+            addReactionToBubble(target,reaction.emoji,'stranger');
           }
         }
         return;
+      }
+      const reply=parseReplyProtocol(line);
+      if(reply&&!b.dataset.aeReplyCard){
+        b.dataset.aeReplyCard='1';
+        b.innerHTML=`<div class="ae-reply-card"><small>Replying to</small><span>${escapeHtml(reply.quote||'Message')}</span></div><div>${escapeHtml(reply.body||'')}</div>`;
       }
       const song=parseSongProtocol(line);
       if(song&&!b.dataset.aeSongCard){
@@ -388,26 +453,199 @@
   function enhanceChatReactions(){
     const { input, sendBtn }=chatInput();
     document.querySelectorAll('.chat-bubble-me,.chat-bubble-stranger').forEach(b=>{
+      b.querySelectorAll(':scope > .ae-quick-react').forEach(x=>x.remove());
       if(b.classList.contains('ae-protocol-hidden')||b.dataset.aeSongCard) return;
-      if(!b.dataset.aeReact){
-        b.dataset.aeReact='1';
-        const row=document.createElement('div');
-        row.className='ae-quick-react';
-        row.innerHTML=EMOJIS.map(e=>`<button type="button" title="React">${e}</button>`).join('');
-        row.addEventListener('click',ev=>{
-          const btn=ev.target.closest('button');
-          if(!btn||!input||!sendBtn) return;
-          ev.preventDefault();
-          ev.stopPropagation();
-          const emoji=btn.textContent;
-          const side=sideForBubble(b);
-          const index=indexForBubble(b);
-          addReactionToBubble(b,emoji);
-          sendChatProtocol(`[[AE_REACTION|${side}|${index}|${encodeURIComponent(emoji)}]]`);
-        });
-        b.appendChild(row);
+      if(!b.dataset.aeMenu){
+        b.dataset.aeMenu='1';
+        const more=document.createElement('button');
+        more.className='ae-bubble-more';
+        more.type='button';
+        more.title='Message options';
+        more.setAttribute('aria-expanded','false');
+        more.textContent='⋯';
+        more.onclick=ev=>{
+          ev.preventDefault(); ev.stopPropagation();
+          document.querySelectorAll('.ae-bubble-menu,.ae-react-pop').forEach(x=>x.remove());
+          const open=more.getAttribute('aria-expanded')==='true';
+          document.querySelectorAll('.ae-bubble-more').forEach(x=>x.setAttribute('aria-expanded','false'));
+          if(open) return;
+          more.setAttribute('aria-expanded','true');
+          const menu=document.createElement('div');
+          menu.className='ae-bubble-menu';
+          menu.innerHTML='<button type="button" data-action="reply">↩ Reply</button><button type="button" data-action="react">♡ React</button><button type="button" data-action="report">⚑ Report</button>';
+          menu.onclick=e=>{
+            const action=e.target.closest('button')?.dataset.action;
+            if(!action) return;
+            e.preventDefault(); e.stopPropagation();
+            if(action==='reply') startReply(b);
+            if(action==='react') showReactPicker(b,more);
+            if(action==='report') openReportModal(b);
+            if(action!=='react'){ menu.remove(); more.setAttribute('aria-expanded','false'); }
+          };
+          b.appendChild(menu);
+        };
+        b.appendChild(more);
       }
     });
+  }
+
+  function cleanBubbleText(b){
+    const clone=b.cloneNode(true);
+    clone.querySelectorAll('.ae-bubble-more,.ae-bubble-menu,.ae-react-pop,.ae-reaction-bar,.ae-quick-react').forEach(x=>x.remove());
+    return (clone.innerText||clone.textContent||'').split('\n').map(x=>x.trim()).filter(x=>x&&!x.match(/^\d{1,2}:\d{2}\s*(AM|PM)?$/i)).join(' ').replace(/\[\[AE_[^\]]+\]\]/g,'').trim().substring(0,280);
+  }
+
+  function showReactPicker(b,more){
+    document.querySelectorAll('.ae-bubble-menu,.ae-react-pop').forEach(x=>x.remove());
+    const pop=document.createElement('div');
+    pop.className='ae-react-pop';
+    pop.innerHTML=EMOJIS.slice(0,8).map(e=>`<button type="button">${e}</button>`).join('');
+    pop.onclick=ev=>{
+      const btn=ev.target.closest('button');
+      if(!btn) return;
+      ev.preventDefault(); ev.stopPropagation();
+      const emoji=btn.textContent;
+      const side=sideForBubble(b);
+      const index=indexForBubble(b);
+      addReactionToBubble(b,emoji,'me');
+      sendChatProtocol(`[[AE_REACTION|${side}|${index}|${encodeURIComponent(emoji)}]]`);
+      pop.remove();
+      more.setAttribute('aria-expanded','false');
+    };
+    b.appendChild(pop);
+  }
+
+  function startReply(b){
+    aeReplyTarget={ quote:cleanBubbleText(b)||'Message' };
+    renderReplyPreview();
+    const { input }=chatInput();
+    if(input) input.focus();
+  }
+
+  function renderReplyPreview(){
+    document.getElementById('ae-reply-preview')?.remove();
+    if(!aeReplyTarget) return;
+    const { input }=chatInput();
+    if(!input||!input.parentElement) return;
+    const box=document.createElement('div');
+    box.id='ae-reply-preview';
+    box.className='ae-reply-preview';
+    box.innerHTML=`<div><b>Reply</b><span>${escapeHtml(aeReplyTarget.quote)}</span></div><button type="button">×</button>`;
+    box.querySelector('button').onclick=()=>{aeReplyTarget=null;box.remove();};
+    input.parentElement.parentElement?.insertBefore(box,input.parentElement);
+  }
+
+  function wireReplySend(){
+    const { input, sendBtn }=chatInput();
+    if(!input||!sendBtn||sendBtn.dataset.aeReplyWire) return;
+    sendBtn.dataset.aeReplyWire='1';
+    sendBtn.addEventListener('click',ev=>{
+      if(aeBypassSend||!aeReplyTarget) return;
+      const body=input.value.trim();
+      if(!body) return;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      const quote=aeReplyTarget.quote;
+      aeReplyTarget=null;
+      document.getElementById('ae-reply-preview')?.remove();
+      sendChatProtocol(`[[AE_REPLY|${encodeURIComponent(quote)}|${encodeURIComponent(body)}]]`);
+    },true);
+  }
+
+  function openReportModal(b){
+    if(document.getElementById('ae-report-modal')) return;
+    const text=cleanBubbleText(b)||'Message';
+    const isOwn=sideForBubble(b)==='me';
+    const modal=document.createElement('div');
+    modal.id='ae-report-modal';
+    modal.className='ae-report-modal';
+    modal.innerHTML=`<div class="ae-report-sheet"><h3>Report ${isOwn?'message':'passenger'}</h3><p>${escapeHtml(text)}</p><textarea placeholder="Tell station staff what happened"></textarea><div class="ae-report-actions"><button type="button" data-close>Cancel</button><button class="primary" type="button" data-send>Send</button></div></div>`;
+    document.body.appendChild(modal);
+    const close=()=>modal.remove();
+    modal.addEventListener('click',ev=>{if(ev.target===modal)close();});
+    modal.querySelector('[data-close]').onclick=close;
+    modal.querySelector('[data-send]').onclick=async()=>{
+      const reason=modal.querySelector('textarea').value.trim();
+      if(reason.length<5){modal.querySelector('textarea').focus();return;}
+      try{
+        const r=await fetch('/api/reports',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token()},body:JSON.stringify({type:isOwn?'message':'passenger',messageText:text,messageSide:sideForBubble(b),reportedUser:isOwn?'Own message':'Stranger passenger',reason})});
+        const d=await r.json().catch(()=>({}));
+        if(!r.ok) throw new Error(d.message||'Report failed');
+        close();
+        showToast('Report sent to station staff.');
+      }catch(e){showToast(e.message||'Report failed.');}
+    };
+  }
+
+  function showToast(message){
+    const old=document.getElementById('ae-toast'); if(old) old.remove();
+    const el=document.createElement('div');
+    el.id='ae-toast';
+    el.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483642;background:#101018;color:#eee5cb;border:1px solid rgba(217,193,95,.22);border-radius:999px;padding:10px 15px;font:700 12px/1 DM Sans,system-ui,sans-serif;box-shadow:0 18px 45px rgba(0,0,0,.35)';
+    el.textContent=message;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),2400);
+  }
+
+  async function apiJson(url,opts={}){
+    const headers={...(opts.headers||{}),Authorization:'Bearer '+token()};
+    if(opts.body&&!headers['Content-Type']) headers['Content-Type']='application/json';
+    const r=await fetch(url,{...opts,headers});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d.message||'Request failed');
+    return d;
+  }
+
+  function renderStaffTriage(){
+    if(!['/moderator','/admin'].includes(location.pathname)||!authed()) { document.getElementById('ae-staff-triage')?.remove(); return; }
+    if(document.getElementById('ae-staff-triage')) return;
+    const root=document.querySelector('main section')||document.querySelector('main')||document.getElementById('root');
+    if(!root) return;
+    const box=document.createElement('section');
+    box.id='ae-staff-triage';
+    box.className='ae-staff-triage';
+    box.innerHTML=`<div class="ae-staff-head"><h2>Staff Triage</h2><div class="ae-staff-tabs"><button data-tab="confessions" class="active">Confessions</button><button data-tab="messages">Msg Reports</button><button data-tab="people">People Reports</button></div></div><div class="ae-staff-body"><div class="ae-song-note">Loading queue...</div></div>`;
+    root.prepend(box);
+    box.querySelector('.ae-staff-tabs').onclick=ev=>{
+      const btn=ev.target.closest('button'); if(!btn) return;
+      box.querySelectorAll('.ae-staff-tabs button').forEach(b=>b.classList.toggle('active',b===btn));
+      loadStaffTab(btn.dataset.tab);
+    };
+    loadStaffTab('confessions');
+  }
+
+  async function loadStaffTab(tab){
+    const body=document.querySelector('#ae-staff-triage .ae-staff-body');
+    if(!body) return;
+    body.innerHTML='<div class="ae-song-note">Loading queue...</div>';
+    try{
+      if(tab==='confessions'){
+        const d=await apiJson('/api/moderator/confessions/pending');
+        const items=d.confessions||[];
+        body.innerHTML=items.length?`<div class="ae-staff-grid">${items.map(c=>`<article class="ae-staff-card"><div class="ae-staff-meta">Confession approve/reject</div><b>${escapeHtml(c.from||'Someone')} → ${escapeHtml(c.to||'Someone')}</b><p>${escapeHtml(c.message||'')}</p><div class="ae-staff-actions"><button class="primary" data-conf="${c._id}" data-action="approve">Approve</button><button data-conf="${c._id}" data-action="reject">Reject</button></div></article>`).join('')}</div>`:'<div class="ae-song-note">No pending confessions.</div>';
+        body.querySelectorAll('[data-conf]').forEach(btn=>btn.onclick=async()=>{await apiJson(`/api/moderator/confessions/${btn.dataset.conf}/review`,{method:'PUT',body:JSON.stringify({action:btn.dataset.action})});showToast('Confession updated.');loadStaffTab('confessions');});
+        return;
+      }
+      const type=tab==='people'?'people':'message';
+      const d=await apiJson('/api/moderator/reports?status=pending&type='+type+'&limit=30');
+      const reports=d.reports||[];
+      let html=tab==='people'?'<div class="ae-staff-search"><input placeholder="Search passenger to temporarily suspend"><button data-user-search>Search</button></div><div id="ae-user-results"></div>':'';
+      html+=reports.length?`<div class="ae-staff-grid">${reports.map(r=>`<article class="ae-staff-card"><div class="ae-staff-meta">${escapeHtml(r.type||type)} report · ${escapeHtml(r.status||'pending')}</div><b>${escapeHtml(r.reportedUser||'Chat report')}</b>${r.messageText?`<p>${escapeHtml(r.messageText)}</p>`:''}<p>${escapeHtml(r.reason||'')}</p><div class="ae-staff-actions"><button class="primary" data-report="${r._id}" data-status="reviewed">Reviewed</button><button data-report="${r._id}" data-status="actioned">Actioned</button><button data-report="${r._id}" data-status="dismissed">Dismiss</button></div></article>`).join('')}</div>`:'<div class="ae-song-note">No pending reports.</div>';
+      body.innerHTML=html;
+      body.querySelectorAll('[data-report]').forEach(btn=>btn.onclick=async()=>{await apiJson(`/api/moderator/reports/${btn.dataset.report}`,{method:'PUT',body:JSON.stringify({status:btn.dataset.status})});showToast('Report updated.');loadStaffTab(tab);});
+      const search=body.querySelector('[data-user-search]');
+      if(search) search.onclick=async()=>{
+        const q=body.querySelector('.ae-staff-search input').value.trim();
+        const d=await apiJson('/api/moderator/users?search='+encodeURIComponent(q));
+        const users=d.users||[];
+        body.querySelector('#ae-user-results').innerHTML=users.length?`<div class="ae-staff-grid">${users.map(u=>`<article class="ae-staff-card"><div class="ae-staff-meta">${escapeHtml(u.role)} ${u.isBanned?'· suspended':''}</div><b>${escapeHtml(u.name||'Passenger')}</b><p>${escapeHtml(u.email||'')}</p><div class="ae-staff-actions"><button class="primary" data-suspend="${u._id}">Temp suspend 24h</button>${admin()?`<button data-unban="${u._id}">Unban</button><button data-perm="${u._id}">Permanent ban</button>`:''}</div></article>`).join('')}</div>`:'<div class="ae-song-note">No passengers found.</div>';
+        body.querySelectorAll('[data-suspend]').forEach(btn=>btn.onclick=async()=>{await apiJson(`/api/moderator/users/${btn.dataset.suspend}/suspend`,{method:'PUT',body:JSON.stringify({hours:24,reason:'Temporary moderator suspension after people report.'})});showToast('Passenger temporarily suspended.');});
+        body.querySelectorAll('[data-unban]').forEach(btn=>btn.onclick=async()=>{await apiJson(`/api/admin/users/${btn.dataset.unban}/ban`,{method:'PUT',body:JSON.stringify({banned:false})});showToast('Passenger unbanned.');});
+        body.querySelectorAll('[data-perm]').forEach(btn=>btn.onclick=async()=>{await apiJson(`/api/admin/users/${btn.dataset.perm}/ban`,{method:'PUT',body:JSON.stringify({banned:true,reason:'Permanent admin ban after review.'})});showToast('Passenger permanently banned.');});
+      };
+    }catch(e){
+      body.innerHTML=`<div class="ae-song-note">${escapeHtml(e.message||'Queue failed.')}</div>`;
+    }
   }
 
   function openSongModal(){
@@ -467,6 +705,8 @@
     if(location.pathname!=='/chat') return;
     renderProtocolBubbles();
     enhanceChatReactions();
+    renderReplyPreview();
+    wireReplySend();
     ensureSongTool();
   }
   function syncWaitingLounge(){
@@ -475,10 +715,10 @@
     if(old) old.remove();
   }
   function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-  function tick(){try{injectPolishStyles();ensureCinemaHome();fetchConfig();enhanceChat();syncWaitingLounge();}catch(e){}}
+  function tick(){try{injectPolishStyles();ensureCinemaHome();fetchConfig();enhanceChat();renderStaffTriage();syncWaitingLounge();}catch(e){}}
   ['pushState','replaceState'].forEach(k=>{const o=history[k];history[k]=function(){const r=o.apply(this,arguments);setTimeout(tick,80);return r;};});
   addEventListener('popstate',()=>setTimeout(tick,80));
-  setInterval(()=>{try{injectPolishStyles();ensureCinemaHome();updateHomeShell();if(lastConfig&&lastConfig.config) applyHome(lastConfig.config);enhanceChat();syncWaitingLounge();}catch(e){}},700);
+  setInterval(()=>{try{injectPolishStyles();ensureCinemaHome();updateHomeShell();if(lastConfig&&lastConfig.config) applyHome(lastConfig.config);enhanceChat();renderStaffTriage();syncWaitingLounge();}catch(e){}},700);
   setInterval(fetchConfig,15000);
   injectPolishStyles();
   ensureCinemaHome();
